@@ -1,7 +1,12 @@
 <template>
   <div class="hello">
     <h1>{{ msg }}</h1>
-    <h2>Essential Links</h2>
+    <router-link to="/">Go to Top</router-link>
+    <br>
+    <router-link to="/main">Go to Main</router-link>
+    <br>
+    <router-link to="/myfeeds">Go to MyFeeds</router-link>
+    <!-- <h2>Essential Links</h2>
     <ul>
       <li>
         <a
@@ -79,7 +84,7 @@
           awesome-vue
         </a>
       </li>
-    </ul>
+    </ul> -->
   </div>
 </template>
 
