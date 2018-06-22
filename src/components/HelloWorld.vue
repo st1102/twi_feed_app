@@ -3,7 +3,7 @@
     <h1>{{ msg }}</h1>
     <router-link to="/">Go to Top</router-link>
     <br>
-    <router-link to="/main">Go to Main</router-link>
+    <router-link to="/search">Go to Search</router-link>
     <br>
     <router-link to="/myfeeds">Go to MyFeeds</router-link>
     <!-- <h2>Essential Links</h2>
@@ -101,7 +101,7 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-h1, h2 {
+/* h1, h2 {
   font-weight: normal;
 }
 ul {
@@ -114,5 +114,5 @@ li {
 }
 a {
   color: #42b983;
-}
+} */
 </style>
