@@ -1,13 +1,5 @@
 <template>
   <div class="main">
-    <h1>MyFeeds</h1>
-    <router-link to="/">Go to Top</router-link>
-    <br>
-    <router-link to="/search">Go to Search</router-link>
-    <br>
-    <router-link to="/myfeeds">Go to MyFeeds</router-link>
-    <h2>List</h2>
-    <p>Result</p>
     <ul>
       <li v-for="(tweets, word) in this.wordsAndTweets" v-bind:key="word">
         {{ word }}
@@ -23,8 +15,8 @@
 </template>
 
 <script>
-import axios from 'axios'
 import Vue from 'vue'
+import axios from 'axios'
 import Words from '../store/index.js'
 
 export default {

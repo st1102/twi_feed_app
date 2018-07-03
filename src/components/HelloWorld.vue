@@ -1,11 +1,6 @@
 <template>
   <div class="hello">
     <h1>{{ msg }}</h1>
-    <router-link to="/">Go to Top</router-link>
-    <br>
-    <router-link to="/search">Go to Search</router-link>
-    <br>
-    <router-link to="/myfeeds">Go to MyFeeds</router-link>
     <!-- <h2>Essential Links</h2>
     <ul>
       <li>
