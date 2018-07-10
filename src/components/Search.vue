@@ -95,6 +95,7 @@ export default {
   height: 100%;
 }
 
+/* ここより下MyFeedsのフィード部分と共通 */
 .result-feed {
   height: 100%;
   padding: 0 5px 0 5px;
