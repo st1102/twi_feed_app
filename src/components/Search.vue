@@ -2,16 +2,27 @@
   <div class="search">
     <div class="row search-row">
       <!-- search area -->
-      <div class="col s4">
-        <div class="input-field">
-          <input v-model="word" v-on:keyup.enter="submit" placeholder="Input Search Words!!">
+      <div class="col s4 search-col">
+        <div class="row">
+          <div class="input-field col s12">
+            <input id="search-word" v-model="word" v-on:keyup.enter="submit" type="text">
+            <label for="search-word">Word</label>
+          </div>
+          <div class="input-field col s12">
+            <input id="search-user" v-model="user" v-on:keyup.enter="submit" type="text" >
+            <label for="search-user">User</label>
+          </div>
+          <div class="input-field col s12">
+            <input id="search-area" v-model="area" v-on:keyup.enter="submit" type="text">
+            <label for="search-area">Area</label>
+          </div>
         </div>
       </div>
       <!-- result area -->
       <div class="col s8 result-col">
         <div class="result-feed">
-          <!-- TODO submitで反映にしたい -->
-          <h5 class="result-word z-depth-2">Result for "{{ word }}"</h5>
+          <h5 class="result-word z-depth-2">Result for "{{ wordLabel }}"</h5>
+          <a class="btn-floating btn-large waves-effect waves-light red add-button" v-on:click="storeWord"><i class="material-icons">playlist_add</i></a>
           <ul class="collection tweet-list">
             <li v-for="tweet in tweets" v-bind:key="tweet.id" class="collection-item">
               <div class="row tweet-content-row">
@@ -61,6 +72,7 @@ export default {
   data () {
     return {
       word: '',
+      wordLabel: '',
       tweets: []
     }
   },
@@ -74,8 +86,12 @@ export default {
         .catch((error) => {
           console.log(error)
         })
-
-      Words.commit('addWord', this.word) // TODO: 追加ボタンを用意して、それが押されたら実行するようにする
+      this.wordLabel = this.word
+    },
+    storeWord: function () {
+      if (this.word !== '') {
+        Words.commit('addWord', this.word)
+      }
     }
   }
 }
@@ -87,12 +103,23 @@ export default {
   height: 100%;
 }
 
+.search-col {
+  margin: 10px 0 0 0;
+}
+
 .search-row {
   height: 100%;
 }
 
 .result-col {
   height: 100%;
+}
+
+.add-button {
+  position: absolute;
+  /* ヘッダー+ラベル-ボタンの高さの半分 */
+  top: calc((64px + 12px) + (47px + 2px) - 28px);
+  right: 5%;
 }
 
 /* ここより下MyFeedsのフィード部分と共通 */

@@ -16,7 +16,42 @@
         <h5 class="result-word z-depth-2">Result for "{{ word }}"</h5>
         <ul class="collection tweet-list">
           <li v-for="tweet in wordsAndTweets[word]" v-bind:key="tweet.id" class="collection-item">
-            <div class="row tweet-content-row">
+            <!-- リツイート -->
+            <div v-if="tweet.retweeted_status" class="row tweet-content-row retweet">
+              <div class="col s12 retweet-label">
+                <i class="material-icons left green-text fav-retweet-icons">repeat</i><span class="left retweet-username">{{tweet.user.name}} Retweeted</span>
+              </div>
+              <div class="col s2">
+                <img class="circle responsive-img" v-bind:src="tweet.retweeted_status.user.profile_image_url.replace('_normal.jpg', '_bigger.jpg')">
+              </div>
+              <div class="col s10 user-text">
+                <div class="section">
+                  <span class="name-id">
+                    <span class="user-name">{{ tweet.retweeted_status.user.name }}</span>
+                    <span>@{{ tweet.retweeted_status.user.screen_name }}</span>
+                  </span>
+                  <span class="tweet-time right">{{ new Date(tweet.retweeted_status.created_at).getMonth() }}月{{ new Date(tweet.retweeted_status.created_at).getDate() }}日 {{ ('00' + new Date(tweet.retweeted_status.created_at).getHours()).slice(-2) }}:{{ ('00' + new Date(tweet.retweeted_status.created_at).getMinutes()).slice(-2) }}</span>
+                </div>
+                <div class="section">
+                  <div class="tweet-text">
+                    {{ tweet.retweeted_status.text }}
+                  </div>
+                  <div class="center tweet-pictures" v-if="tweet.retweeted_status.extended_entities">
+                    <img class="responsive-img tweet-picture" v-for="picture in tweet.retweeted_status.extended_entities.media" v-bind:key="picture.id" v-bind:src="picture.media_url">
+                  </div>
+                  <div class="fav-retweet">
+                    <div class="fav-retweet-div">
+                      <i class="material-icons left black-text fav-retweet-icons">repeat</i>{{ tweet.retweeted_status.favorite_count }}
+                    </div>
+                    <div class="fav-retweet-div">
+                      <i class="material-icons left black-text fav-retweet-icons">favorite_border</i>{{ tweet.retweeted_status.retweet_count }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- リツイートでない -->
+            <div v-else class="row tweet-content-row">
               <div class="col s2">
                 <img class="circle responsive-img" v-bind:src="tweet.user.profile_image_url.replace('_normal.jpg', '_bigger.jpg')">
               </div>
@@ -26,7 +61,7 @@
                     <span class="user-name">{{ tweet.user.name }}</span>
                     <span>@{{ tweet.user.screen_name }}</span>
                   </span>
-                  <span class="right">{{ new Date(tweet.created_at).getFullYear() }}年{{ new Date(tweet.created_at).getMonth() }}月{{ new Date(tweet.created_at).getDate() }}日 {{ ('00' + new Date(tweet.created_at).getHours()).slice(-2) }}:{{ ('00' + new Date(tweet.created_at).getMinutes()).slice(-2) }}:{{ ('00' + new Date(tweet.created_at).getSeconds()).slice(-2) }}</span>
+                  <span class="tweet-time right">{{ new Date(tweet.created_at).getMonth() }}月{{ new Date(tweet.created_at).getDate() }}日 {{ ('00' + new Date(tweet.created_at).getHours()).slice(-2) }}:{{ ('00' + new Date(tweet.created_at).getMinutes()).slice(-2) }}</span>
                 </div>
                 <div class="section">
                   <div class="tweet-text">
@@ -98,10 +133,18 @@ export default {
   overflow-x: scroll;
 }
 
+.retweet-label {
+  margin: 0 0 8px 0;
+}
+
+.retweet-username {
+  margin: 0 0 0 5px;
+}
+
 /* ここより下 MyFeedsのフィード部分と共通 */
 .result-feed {
   height: 100%;
-  width: 40%;
+  width: 400px;
   padding: 0 5px 0 5px;
   border-right: solid 2px #00acc155;
   border-left: solid 2px #00acc155;
@@ -142,6 +185,10 @@ export default {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+}
+
+.tweet-time {
+  font-size: 0.8em;
 }
 
 .responsive-img {
