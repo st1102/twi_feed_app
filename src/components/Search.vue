@@ -5,16 +5,44 @@
       <div class="col s4 search-col">
         <div class="row">
           <div class="input-field col s12">
-            <input id="search-word" v-model="word" v-on:keyup.enter="submit" type="text">
-            <label for="search-word">Word</label>
+            <input id="search-word" v-model="parameters.word" v-on:keyup.enter="submit" type="text">
+            <label for="search-word">キーワード</label>
           </div>
           <div class="input-field col s12">
-            <input id="search-user" v-model="user" v-on:keyup.enter="submit" type="text" >
-            <label for="search-user">User</label>
+            <input id="search-ex-word" v-model="parameters.exWord" v-on:keyup.enter="submit" type="text">
+            <label for="search-ex-word">除外キーワード</label>
           </div>
           <div class="input-field col s12">
-            <input id="search-area" v-model="area" v-on:keyup.enter="submit" type="text">
-            <label for="search-area">Area</label>
+            <input id="search-user" v-model="parameters.user" v-on:keyup.enter="submit" type="text" >
+            <label for="search-user">ユーザー</label>
+          </div>
+          <div class="input-field col s12">
+            <input id="search-area" v-model="parameters.area" v-on:keyup.enter="submit" type="text">
+            <label for="search-area">ツイート場所</label>
+          </div>
+          <div class="medias-check-field col s12">
+            <div class="images-check-field col s6">
+              <input id="search-images" v-model="parameters.images" type="checkbox">
+              <label class="left" for="search-images">写真</label>
+            </div>
+            <div class="videos-check-field col s6">
+              <input id="search-videos" v-model="parameters.videos" type="checkbox">
+              <label class="left" for="search-videos">動画</label>
+            </div>
+          </div>
+          <div class="posi-nega-field col s12">
+            <div class="emotion-field both-field col s12">
+              <input name="emotion" class="with-gap" id="search-both" v-model="parameters.both" type="radio">
+              <label class="left" for="search-both">全て</label>
+            </div>
+            <div class="emotion-field posi-field col s12">
+              <input name="emotion" class="with-gap" id="search-posi" v-model="parameters.positive" type="radio">
+              <label class="left" for="search-posi"><i class="material-icons left yellow-text">mood</i>ポジティブなTweet</label>
+            </div>
+            <div class="emotion-field nega-field col s12">
+              <input name="emotion" class="with-gap" id="search-nega" v-model="parameters.negative" type="radio">
+              <label class="left" for="search-nega"><i class="material-icons left blue-text">mood_bad</i>ネガティブなTweet</label>
+            </div>
           </div>
         </div>
       </div>
@@ -71,14 +99,35 @@ export default {
   name: 'Search',
   data () {
     return {
-      word: '',
+      parameters: {
+        word: '',
+        exWord: '',
+        user: '',
+        area: '',
+        images: '',
+        videos: '',
+        positive: '',
+        negative: ''
+      },
+      query: '',
       wordLabel: '',
       tweets: []
     }
   },
   methods: {
     submit: function () {
-      axios.get('http://localhost:3030/twitter/search?q=' + this.word)
+      let q = ''
+      for (let param in this.parameters) { // クエリに使うパラメータを組み立て
+        q += this.parameters[param] + ','
+        console.log(this.parameters[param])
+      }
+      console.log(q)
+      // this.query = q
+      // console.log(this.query)
+      // console.log(this.word)
+      // console.log(this.parameters.word)
+
+      axios.get('http://localhost:3030/twitter/search?q=' + this.parameters.word)
         .then((response) => {
           console.log(response)
           this.tweets = response.data.statuses
@@ -109,6 +158,18 @@ export default {
 
 .search-row {
   height: 100%;
+}
+
+.medias-check-field {
+  margin: 30px 0 0 0;
+}
+
+.posi-nega-field {
+  margin: 35px 0 0 0;
+}
+
+.emotion-field {
+  margin: 5px 0 5px 0;
 }
 
 .result-col {
