@@ -12,14 +12,17 @@
             <input id="search-ex-word" v-model="parameters.exWord" v-on:keyup.enter="submit" type="text">
             <label for="search-ex-word">除外キーワード</label>
           </div>
-          <div class="input-field col s12">
-            <input id="search-user" v-model="parameters.user" v-on:keyup.enter="submit" type="text" >
-            <label for="search-user">ユーザー</label>
+          <div class="col s12">
+            <h5 class="at-mark col s1">＠</h5>
+            <div class="input-field col s11">
+              <input id="search-user" v-model="parameters.user" v-on:keyup.enter="submit" type="text" >
+              <label for="search-user">ツイートユーザーID</label>
+            </div>
           </div>
-          <div class="input-field col s12">
+          <!-- <div class="input-field col s12">
             <input id="search-area" v-model="parameters.area" v-on:keyup.enter="submit" type="text">
             <label for="search-area">ツイート場所</label>
-          </div>
+          </div> -->
           <div class="medias-check-field col s12">
             <div class="images-check-field col s6">
               <input id="search-images" v-model="parameters.images" type="checkbox">
@@ -31,17 +34,17 @@
             </div>
           </div>
           <div class="posi-nega-field col s12">
-            <div class="emotion-field both-field col s12">
-              <input name="emotion" class="with-gap" id="search-both" v-model="parameters.both" type="radio">
-              <label class="left" for="search-both">全て</label>
-            </div>
             <div class="emotion-field posi-field col s12">
-              <input name="emotion" class="with-gap" id="search-posi" v-model="parameters.positive" type="radio">
-              <label class="left" for="search-posi"><i class="material-icons left yellow-text">mood</i>ポジティブなTweet</label>
+              <input name="emotion" class="with-gap" id="search-posi" value="posi" v-model="parameters.emotion" type="radio">
+              <label class="left" for="search-posi"><i class="material-icons left yellow-text">mood</i>ポジティブなツイート</label>
             </div>
             <div class="emotion-field nega-field col s12">
-              <input name="emotion" class="with-gap" id="search-nega" v-model="parameters.negative" type="radio">
-              <label class="left" for="search-nega"><i class="material-icons left blue-text">mood_bad</i>ネガティブなTweet</label>
+              <input name="emotion" class="with-gap" id="search-nega" value="nega" v-model="parameters.emotion" type="radio">
+              <label class="left" for="search-nega"><i class="material-icons left blue-text">mood_bad</i>ネガティブなツイート</label>
+            </div>
+            <div class="emotion-field both-field col s12">
+              <input name="emotion" class="with-gap" id="search-both" value="all" v-model="parameters.emotion" type="radio">
+              <label class="left" for="search-both">全て</label>
             </div>
           </div>
         </div>
@@ -49,7 +52,9 @@
       <!-- result area -->
       <div class="col s8 result-col">
         <div class="result-feed">
-          <h5 class="result-word z-depth-2">Result for "{{ wordLabel }}"</h5>
+          <div class="result-words z-depth-2">
+            <span v-for="word in labelWords" v-if="word !== ''" v-bind:key="word" class="result-word card blue lighten-5">{{ word }}</span>
+          </div>
           <a class="btn-floating btn-large waves-effect waves-light red add-button" v-on:click="storeWord"><i class="material-icons">playlist_add</i></a>
           <ul class="collection tweet-list">
             <li v-for="tweet in tweets" v-bind:key="tweet.id" class="collection-item">
@@ -63,7 +68,7 @@
                       <span class="user-name">{{ tweet.user.name }}</span>
                       <span>@{{ tweet.user.screen_name }}</span>
                     </span>
-                    <span class="right">{{ new Date(tweet.created_at).getFullYear() }}年{{ new Date(tweet.created_at).getMonth() }}月{{ new Date(tweet.created_at).getDate() }}日 {{ ('00' + new Date(tweet.created_at).getHours()).slice(-2) }}:{{ ('00' + new Date(tweet.created_at).getMinutes()).slice(-2) }}:{{ ('00' + new Date(tweet.created_at).getSeconds()).slice(-2) }}</span>
+                    <span class="right">{{ new Date(tweet.created_at).getMonth() }}月{{ new Date(tweet.created_at).getDate() }}日 {{ ('00' + new Date(tweet.created_at).getHours()).slice(-2) }}:{{ ('00' + new Date(tweet.created_at).getMinutes()).slice(-2) }}</span>
                   </div>
                   <div class="section">
                     <div class="tweet-text">
@@ -102,32 +107,60 @@ export default {
       parameters: {
         word: '',
         exWord: '',
+        emotion: '',
         user: '',
-        area: '',
+        // area: '',
         images: '',
-        videos: '',
-        positive: '',
-        negative: ''
+        videos: ''
       },
       query: '',
       wordLabel: '',
+      labelWords: [],
       tweets: []
     }
   },
   methods: {
     submit: function () {
+      let wL = ''
       let q = ''
       for (let param in this.parameters) { // クエリに使うパラメータを組み立て
-        q += this.parameters[param] + ','
         console.log(this.parameters[param])
+        if (this.parameters[param] !== '' && this.parameters[param] !== null && this.parameters[param] !== undefined && this.parameters[param] !== false) {
+          if (param === 'word') {
+            q += this.parameters[param] + ' '
+            wL += this.parameters[param] + ','
+          } else if (param === 'exWord') {
+            q += '-' + this.parameters[param] + ' '
+            wL += '除外：' + this.parameters[param] + ','
+          } else if (param === 'emotion') {
+            if (this.parameters[param] === 'posi') {
+              q += ':)' + ' '
+              wL += ':)' + ','
+            } else if (this.parameters[param] === 'nega') {
+              q += ':(' + ' '
+              wL += ':(' + ','
+            }
+          } else if (param === 'user') {
+            q += 'from:' + this.parameters[param] + ' '
+            wL += this.parameters[param] + ','
+          } else if (param === 'images') {
+            q += 'filter:' + param + ' '
+            wL += '画像あり' + ','
+          } else if (param === 'videos') {
+            q += 'filter:' + param + ' '
+            wL += '動画あり' + ','
+          // } else if (param === 'area') {
+          //   q += 'near:' + this.parameters[param] + ' '
+          }
+        }
       }
-      console.log(q)
-      // this.query = q
-      // console.log(this.query)
-      // console.log(this.word)
-      // console.log(this.parameters.word)
+      this.wordLabel = wL
+      console.log(this.wordLabel)
+      this.labelWords = this.wordLabel.split(',')
+      this.query = q
+      console.log(this.query)
 
-      axios.get('http://localhost:3030/twitter/search?q=' + this.parameters.word)
+      axios.get('http://localhost:3030/twitter/search?q=' + this.query)
         .then((response) => {
           console.log(response)
           this.tweets = response.data.statuses
@@ -135,11 +168,10 @@ export default {
         .catch((error) => {
           console.log(error)
         })
-      this.wordLabel = this.word
     },
     storeWord: function () {
       if (this.word !== '') {
-        Words.commit('addWord', this.word)
+        Words.commit('addWord', this.query)
       }
     }
   }
@@ -158,6 +190,11 @@ export default {
 
 .search-row {
   height: 100%;
+}
+
+.at-mark {
+  margin: 28px 0 0 0;
+  padding: 0 5px 0 0;
 }
 
 .medias-check-field {
@@ -186,14 +223,25 @@ export default {
 /* ここより下MyFeedsのフィード部分と共通 */
 .result-feed {
   height: 100%;
+  margin: 10px 0 0 0;
   padding: 0 5px 0 5px;
   border-right: solid 2px #00acc155;
   border-left: solid 2px #00acc155;
 }
 
-.result-word {
+/* 共通でない */
+.result-words {
   padding: 10px 0 10px 0;
   margin-bottom: 2px;
+}
+
+/* 共通でない */
+.result-word {
+  /* padding: 10px 0 10px 0;
+  margin-bottom: 2px; */
+  font-size: 1.5em;
+  margin: 5px;
+  padding: 5px;
 }
 
 .tweet-list {
