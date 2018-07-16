@@ -12,10 +12,10 @@
       </li>
     </ul> -->
     <div class="result-feeds">
-      <div v-for="word in words" v-bind:key="word" class="result-feed">
-        <h5 class="result-word z-depth-2">Result for "{{ word }}"</h5>
+      <div v-for="query in words" v-bind:key="query" class="result-feed">
+        <h5 class="result-word z-depth-2">{{ query }}</h5>
         <ul class="collection tweet-list">
-          <li v-for="tweet in wordsAndTweets[word]" v-bind:key="tweet.id" class="collection-item">
+          <li v-for="tweet in wordsAndTweets[query]" v-bind:key="tweet.id" class="collection-item">
             <!-- リツイート -->
             <div v-if="tweet.retweeted_status" class="row tweet-content-row retweet">
               <div class="col s12 retweet-label">
@@ -106,11 +106,11 @@ export default {
   },
   created () {
     this.words = Words.getters.getWords
-    for (let word of this.words) {
-      axios.get('http://localhost:3030/twitter/search?q=' + word)
+    for (let query of this.words) {
+      axios.get('http://localhost:3030/twitter/search?q=' + query)
         .then((response) => {
           console.log(response)
-          Vue.set(this.wordsAndTweets, word, response.data.statuses)
+          Vue.set(this.wordsAndTweets, query, response.data.statuses)
           console.log(this.wordsAndTweets)
         })
         .catch((error) => {

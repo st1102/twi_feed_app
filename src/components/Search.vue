@@ -23,7 +23,7 @@
             <input id="search-area" v-model="parameters.area" v-on:keyup.enter="submit" type="text">
             <label for="search-area">ツイート場所</label>
           </div> -->
-          <div class="medias-check-field col s12">
+          <div class="media-check-field col s12">
             <div class="images-check-field col s6">
               <input id="search-images" v-model="parameters.images" type="checkbox">
               <label class="left" for="search-images">写真</label>
@@ -74,8 +74,18 @@
                     <div class="tweet-text">
                       {{ tweet.text }}
                     </div>
-                    <div class="center tweet-pictures" v-if="tweet.extended_entities">
-                      <img class="responsive-img tweet-picture" v-for="picture in tweet.extended_entities.media" v-bind:key="picture.id" v-bind:src="picture.media_url">
+                    <div class="center tweet-media" v-if="tweet.extended_entities">
+                      <div v-for="media in tweet.extended_entities.media" v-bind:key="media.id">
+                        <div class="tweet-pictures" v-if="media.type === 'photo'">
+                          <img class="responsive-img tweet-picture" v-bind:src="media.media_url">
+                        </div>
+                        <div class="tweet-videos center" v-if="media.type === 'video'">
+                          <!-- <iframe class="tweet-video" v-bind:src="media.video_info.variants[0].url" frameborder="0" allowfullscreen></iframe> -->
+                          <video class="responsive-video" width="430" height="240" controls>
+                            <source v-bind:src="media.video_info.variants[0].url">
+                          </video>
+                        </div>
+                      </div>
                     </div>
                     <div class="fav-retweet">
                       <div class="fav-retweet-div">
@@ -124,7 +134,7 @@ export default {
       let wL = ''
       let q = ''
       for (let param in this.parameters) { // クエリに使うパラメータを組み立て
-        console.log(this.parameters[param])
+        // console.log(this.parameters[param])
         if (this.parameters[param] !== '' && this.parameters[param] !== null && this.parameters[param] !== undefined && this.parameters[param] !== false) {
           if (param === 'word') {
             q += this.parameters[param] + ' '
@@ -155,10 +165,10 @@ export default {
         }
       }
       this.wordLabel = wL
-      console.log(this.wordLabel)
+      // console.log(this.wordLabel)
       this.labelWords = this.wordLabel.split(',')
       this.query = q
-      console.log(this.query)
+      // console.log(this.query)
 
       axios.get('http://localhost:3030/twitter/search?q=' + this.query)
         .then((response) => {
@@ -197,7 +207,7 @@ export default {
   padding: 0 5px 0 0;
 }
 
-.medias-check-field {
+.media-check-field {
   margin: 30px 0 0 0;
 }
 
@@ -284,13 +294,22 @@ export default {
   margin: 5px 0 10px 0;
 }
 
-.tweet-pictures {
+.tweet-media {
   margin: 10px 0 10px 0;
 }
 
 .tweet-picture {
   display: inline-block;
   width: 80%;
+}
+
+.tweet-videos {
+  display: inline-block;
+  width: 90%;
+}
+
+.tweet-video {
+  display: inline-block;
 }
 
 .fav-retweet {
