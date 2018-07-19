@@ -58,7 +58,7 @@
           <a class="btn-floating btn-large waves-effect waves-light red add-button" v-on:click="storeWord"><i class="material-icons">playlist_add</i></a>
           <ul class="collection tweet-list">
             <li v-for="tweet in tweets" v-bind:key="tweet.id" class="collection-item">
-              <div class="row tweet-content-row">
+              <!-- <div class="row tweet-content-row">
                 <div class="col s2">
                   <img class="circle responsive-img" v-bind:src="tweet.user.profile_image_url.replace('_normal.jpg', '_bigger.jpg')">
                 </div>
@@ -77,9 +77,93 @@
                     <div class="center tweet-media" v-if="tweet.extended_entities">
                       <div class="tweet-medium" v-if="tweet.extended_entities.media.length > 1" v-for="media in tweet.extended_entities.media" v-bind:key="media.id">
                         <img v-if="media.type === 'photo'" class="responsive-img tweet-picture" v-bind:src="media.media_url">
-                        <!-- <video v-if="media.type === 'video'" class="responsive-video" width="430" height="240" controls>
+                      </div>
+                      <div class="tweet-medium-one valign-wrapper" v-if="tweet.extended_entities.media.length === 1" v-for="media in tweet.extended_entities.media" v-bind:key="media.id">
+                        <img v-if="media.type === 'photo'" class="responsive-img tweet-picture-one" v-bind:src="media.media_url">
+                        <video v-if="media.type === 'video'" class="responsive-video tweet-video" width="430" height="240" controls>
                           <source v-bind:src="media.video_info.variants[0].url">
-                        </video> -->
+                        </video>
+                      </div>
+                    </div>
+                    <div class="fav-retweet">
+                      <div class="fav-retweet-div">
+                        <i class="material-icons left black-text fav-retweet-icons">repeat</i>{{ tweet.favorite_count }}
+                      </div>
+                      <div class="fav-retweet-div">
+                        <i class="material-icons left black-text fav-retweet-icons">favorite_border</i>{{ tweet.retweet_count }}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div> -->
+              <!-- リツイート -->
+              <div v-if="tweet.retweeted_status" class="row tweet-content-row retweet">
+                <div class="col s12 retweet-label">
+                  <i class="material-icons left green-text fav-retweet-icons">repeat</i><span class="left retweet-username">{{tweet.user.name}} Retweeted</span>
+                </div>
+                <div class="col s2">
+                  <img class="circle responsive-img" v-bind:src="tweet.retweeted_status.user.profile_image_url.replace('_normal.jpg', '_bigger.jpg')">
+                </div>
+                <div class="col s10 user-text">
+                  <div class="section">
+                    <span class="name-id">
+                      <span class="user-name">{{ tweet.retweeted_status.user.name }}</span>
+                      <span>@{{ tweet.retweeted_status.user.screen_name }}</span>
+                    </span>
+                    <span class="tweet-time right">{{ new Date(tweet.retweeted_status.created_at).getMonth() }}月{{ new Date(tweet.retweeted_status.created_at).getDate() }}日 {{ ('00' + new Date(tweet.retweeted_status.created_at).getHours()).slice(-2) }}:{{ ('00' + new Date(tweet.retweeted_status.created_at).getMinutes()).slice(-2) }}</span>
+                  </div>
+                  <div class="section">
+                    <div class="tweet-text">
+                      {{ tweet.retweeted_status.text }}
+                    </div>
+                    <!-- <div class="center tweet-pictures" v-if="tweet.retweeted_status.extended_entities">
+                      <img class="responsive-img tweet-picture" v-for="picture in tweet.retweeted_status.extended_entities.media" v-bind:key="picture.id" v-bind:src="picture.media_url">
+                    </div> -->
+                    <div class="center tweet-media" v-if="tweet.extended_entities">
+                      <div class="tweet-medium" v-if="tweet.extended_entities.media.length > 1" v-for="media in tweet.extended_entities.media" v-bind:key="media.id">
+                        <img v-if="media.type === 'photo'" class="responsive-img tweet-picture" v-bind:src="media.media_url">
+                      </div>
+                      <div class="tweet-medium-one valign-wrapper" v-if="tweet.extended_entities.media.length === 1" v-for="media in tweet.extended_entities.media" v-bind:key="media.id">
+                        <img v-if="media.type === 'photo'" class="responsive-img tweet-picture-one" v-bind:src="media.media_url">
+                        <video v-if="media.type === 'video'" class="responsive-video tweet-video" width="430" height="240" controls>
+                          <source v-bind:src="media.video_info.variants[0].url">
+                        </video>
+                      </div>
+                    </div>
+                    <div class="fav-retweet">
+                      <div class="fav-retweet-div">
+                        <i class="material-icons left black-text fav-retweet-icons">repeat</i>{{ tweet.retweeted_status.favorite_count }}
+                      </div>
+                      <div class="fav-retweet-div">
+                        <i class="material-icons left black-text fav-retweet-icons">favorite_border</i>{{ tweet.retweeted_status.retweet_count }}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- リツイートでない -->
+              <div v-else class="row tweet-content-row">
+                <div class="col s2">
+                  <img class="circle responsive-img" v-bind:src="tweet.user.profile_image_url.replace('_normal.jpg', '_bigger.jpg')">
+                </div>
+                <div class="col s10 user-text">
+                  <div class="section">
+                    <span class="name-id">
+                      <span class="user-name">{{ tweet.user.name }}</span>
+                      <span>@{{ tweet.user.screen_name }}</span>
+                    </span>
+                    <span class="tweet-time right">{{ new Date(tweet.created_at).getMonth() }}月{{ new Date(tweet.created_at).getDate() }}日 {{ ('00' + new Date(tweet.created_at).getHours()).slice(-2) }}:{{ ('00' + new Date(tweet.created_at).getMinutes()).slice(-2) }}</span>
+                  </div>
+                  <div class="section">
+                    <div class="tweet-text">
+                      {{ tweet.text }}
+                    </div>
+                    <!-- <div class="center tweet-pictures" v-if="tweet.extended_entities">
+                      <img class="responsive-img tweet-picture" v-for="picture in tweet.extended_entities.media" v-bind:key="picture.id" v-bind:src="picture.media_url">
+                    </div> -->
+                    <div class="center tweet-media" v-if="tweet.extended_entities">
+                      <div class="tweet-medium" v-if="tweet.extended_entities.media.length > 1" v-for="media in tweet.extended_entities.media" v-bind:key="media.id">
+                        <img v-if="media.type === 'photo'" class="responsive-img tweet-picture" v-bind:src="media.media_url">
                       </div>
                       <div class="tweet-medium-one valign-wrapper" v-if="tweet.extended_entities.media.length === 1" v-for="media in tweet.extended_entities.media" v-bind:key="media.id">
                         <img v-if="media.type === 'photo'" class="responsive-img tweet-picture-one" v-bind:src="media.media_url">
@@ -135,7 +219,6 @@ export default {
       let wL = ''
       let q = ''
       for (let param in this.parameters) { // クエリに使うパラメータを組み立て
-        // console.log(this.parameters[param])
         if (this.parameters[param] !== '' && this.parameters[param] !== null && this.parameters[param] !== undefined && this.parameters[param] !== false) {
           if (param === 'word') {
             q += this.parameters[param] + ' '
@@ -166,10 +249,8 @@ export default {
         }
       }
       this.wordLabel = wL
-      // console.log(this.wordLabel)
       this.labelWords = this.wordLabel.split(',')
       this.query = q
-      // console.log(this.query)
 
       axios.get('http://localhost:3030/twitter/search?q=' + this.query)
         .then((response) => {
@@ -231,6 +312,14 @@ export default {
   right: 5%;
 }
 
+.retweet-label {
+  margin: 0 0 8px 0;
+}
+
+.retweet-username {
+  margin: 0 0 0 5px;
+}
+
 /* ここより下MyFeedsのフィード部分と共通 */
 .result-feed {
   height: 100%;
@@ -248,8 +337,6 @@ export default {
 
 /* 共通でない */
 .result-word {
-  /* padding: 10px 0 10px 0;
-  margin-bottom: 2px; */
   font-size: 1.5em;
   margin: 5px;
   padding: 5px;
@@ -304,8 +391,6 @@ export default {
 }
 
 .tweet-medium {
-  /* width: 300px;
-  height: 100%; */
   flex-grow: 0;
   flex-shrink: 0;
 }

@@ -36,8 +36,19 @@
                   <div class="tweet-text">
                     {{ tweet.retweeted_status.text }}
                   </div>
-                  <div class="center tweet-pictures" v-if="tweet.retweeted_status.extended_entities">
+                  <!-- <div class="center tweet-pictures" v-if="tweet.retweeted_status.extended_entities">
                     <img class="responsive-img tweet-picture" v-for="picture in tweet.retweeted_status.extended_entities.media" v-bind:key="picture.id" v-bind:src="picture.media_url">
+                  </div> -->
+                  <div class="center tweet-media" v-if="tweet.extended_entities">
+                    <div class="tweet-medium" v-if="tweet.extended_entities.media.length > 1" v-for="media in tweet.extended_entities.media" v-bind:key="media.id">
+                      <img v-if="media.type === 'photo'" class="responsive-img tweet-picture" v-bind:src="media.media_url">
+                    </div>
+                    <div class="tweet-medium-one valign-wrapper" v-if="tweet.extended_entities.media.length === 1" v-for="media in tweet.extended_entities.media" v-bind:key="media.id">
+                      <img v-if="media.type === 'photo'" class="responsive-img tweet-picture-one" v-bind:src="media.media_url">
+                      <video v-if="media.type === 'video'" class="responsive-video tweet-video" width="430" height="240" controls>
+                        <source v-bind:src="media.video_info.variants[0].url">
+                      </video>
+                    </div>
                   </div>
                   <div class="fav-retweet">
                     <div class="fav-retweet-div">
@@ -67,8 +78,19 @@
                   <div class="tweet-text">
                     {{ tweet.text }}
                   </div>
-                  <div class="center tweet-pictures" v-if="tweet.extended_entities">
+                  <!-- <div class="center tweet-pictures" v-if="tweet.extended_entities">
                     <img class="responsive-img tweet-picture" v-for="picture in tweet.extended_entities.media" v-bind:key="picture.id" v-bind:src="picture.media_url">
+                  </div> -->
+                  <div class="center tweet-media" v-if="tweet.extended_entities">
+                    <div class="tweet-medium" v-if="tweet.extended_entities.media.length > 1" v-for="media in tweet.extended_entities.media" v-bind:key="media.id">
+                      <img v-if="media.type === 'photo'" class="responsive-img tweet-picture" v-bind:src="media.media_url">
+                    </div>
+                    <div class="tweet-medium-one valign-wrapper" v-if="tweet.extended_entities.media.length === 1" v-for="media in tweet.extended_entities.media" v-bind:key="media.id">
+                      <img v-if="media.type === 'photo'" class="responsive-img tweet-picture-one" v-bind:src="media.media_url">
+                      <video v-if="media.type === 'video'" class="responsive-video tweet-video" width="430" height="240" controls>
+                        <source v-bind:src="media.video_info.variants[0].url">
+                      </video>
+                    </div>
                   </div>
                   <div class="fav-retweet">
                     <div class="fav-retweet-div">
@@ -150,9 +172,14 @@ export default {
   border-left: solid 2px #00acc155;
 }
 
-.result-word {
+/* .result-word {
   padding: 10px 0 10px 0;
   margin-bottom: 2px;
+} */
+.result-word {
+  font-size: 1.5em;
+  margin: 5px;
+  padding: 5px;
 }
 
 .tweet-list {
@@ -191,21 +218,60 @@ export default {
   font-size: 0.8em;
 }
 
-.responsive-img {
+/* .responsive-img {
   width: 50px;
-}
+} */
 
 .tweet-text {
   margin: 5px 0 10px 0;
 }
 
-.tweet-pictures {
+/* .tweet-pictures {
   margin: 10px 0 10px 0;
 }
 
 .tweet-picture {
   display: inline-block;
   width: 80%;
+} */
+
+.tweet-media {
+  display: flex;
+  height: 200px;
+  margin: 15px 0 0 0;
+  overflow-x: scroll;
+}
+
+.tweet-medium {
+  flex-grow: 0;
+  flex-shrink: 0;
+}
+
+.tweet-medium-one {
+  width: 100%;
+  height: 95%;
+}
+
+.tweet-picture {
+  object-fit: contain;
+  width: 350px;
+  height: 95%;
+  background-color: #000;
+  border: solid 1px #fff;
+}
+
+.tweet-picture-one {
+  object-fit: contain;
+  width: 100%;
+  height: 100%;
+  background-color: #000;
+  border: solid 1px #fff;
+}
+
+.tweet-video {
+  display: inline-block;
+  width: 100%;
+  height: auto;
 }
 
 .fav-retweet {
