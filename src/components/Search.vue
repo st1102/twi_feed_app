@@ -75,16 +75,17 @@
                       {{ tweet.text }}
                     </div>
                     <div class="center tweet-media" v-if="tweet.extended_entities">
-                      <div v-for="media in tweet.extended_entities.media" v-bind:key="media.id">
-                        <div class="tweet-pictures" v-if="media.type === 'photo'">
-                          <img class="responsive-img tweet-picture" v-bind:src="media.media_url">
-                        </div>
-                        <div class="tweet-videos center" v-if="media.type === 'video'">
-                          <!-- <iframe class="tweet-video" v-bind:src="media.video_info.variants[0].url" frameborder="0" allowfullscreen></iframe> -->
-                          <video class="responsive-video" width="430" height="240" controls>
-                            <source v-bind:src="media.video_info.variants[0].url">
-                          </video>
-                        </div>
+                      <div class="tweet-medium" v-if="tweet.extended_entities.media.length > 1" v-for="media in tweet.extended_entities.media" v-bind:key="media.id">
+                        <img v-if="media.type === 'photo'" class="responsive-img tweet-picture" v-bind:src="media.media_url">
+                        <!-- <video v-if="media.type === 'video'" class="responsive-video" width="430" height="240" controls>
+                          <source v-bind:src="media.video_info.variants[0].url">
+                        </video> -->
+                      </div>
+                      <div class="tweet-medium-one valign-wrapper" v-if="tweet.extended_entities.media.length === 1" v-for="media in tweet.extended_entities.media" v-bind:key="media.id">
+                        <img v-if="media.type === 'photo'" class="responsive-img tweet-picture-one" v-bind:src="media.media_url">
+                        <video v-if="media.type === 'video'" class="responsive-video tweet-video" width="430" height="240" controls>
+                          <source v-bind:src="media.video_info.variants[0].url">
+                        </video>
                       </div>
                     </div>
                     <div class="fav-retweet">
@@ -294,22 +295,46 @@ export default {
   margin: 5px 0 10px 0;
 }
 
+/* TODO: メディア部分の変更フィードページにも反映 */
 .tweet-media {
-  margin: 10px 0 10px 0;
+  display: flex;
+  height: 330px;
+  margin: 15px 0 0 0;
+  overflow-x: scroll;
+}
+
+.tweet-medium {
+  /* width: 300px;
+  height: 100%; */
+  flex-grow: 0;
+  flex-shrink: 0;
+}
+
+.tweet-medium-one {
+  width: 100%;
+  height: 95%;
 }
 
 .tweet-picture {
-  display: inline-block;
-  width: 80%;
+  object-fit: contain;
+  width: 350px;
+  height: 95%;
+  background-color: #000;
+  border: solid 1px #fff;
 }
 
-.tweet-videos {
-  display: inline-block;
-  width: 90%;
+.tweet-picture-one {
+  object-fit: contain;
+  width: 100%;
+  height: 100%;
+  background-color: #000;
+  border: solid 1px #fff;
 }
 
 .tweet-video {
   display: inline-block;
+  width: 100%;
+  height: auto;
 }
 
 .fav-retweet {
