@@ -55,47 +55,9 @@
           <div class="result-words z-depth-2">
             <span v-for="word in labelWords" v-if="word !== ''" v-bind:key="word" class="result-word card blue lighten-5">{{ word }}</span>
           </div>
-          <a class="btn-floating btn-large waves-effect waves-light red add-button" v-on:click="storeWord"><i class="material-icons">playlist_add</i></a>
+          <a class="btn-floating btn-large waves-effect waves-light red add-button" v-on:click="storeQueryWord"><i class="material-icons">playlist_add</i></a>
           <ul class="collection tweet-list">
             <li v-for="tweet in tweets" v-bind:key="tweet.id" class="collection-item">
-              <!-- <div class="row tweet-content-row">
-                <div class="col s2">
-                  <img class="circle responsive-img" v-bind:src="tweet.user.profile_image_url.replace('_normal.jpg', '_bigger.jpg')">
-                </div>
-                <div class="col s10 user-text">
-                  <div class="section">
-                    <span class="name-id">
-                      <span class="user-name">{{ tweet.user.name }}</span>
-                      <span>@{{ tweet.user.screen_name }}</span>
-                    </span>
-                    <span class="right">{{ new Date(tweet.created_at).getMonth() }}月{{ new Date(tweet.created_at).getDate() }}日 {{ ('00' + new Date(tweet.created_at).getHours()).slice(-2) }}:{{ ('00' + new Date(tweet.created_at).getMinutes()).slice(-2) }}</span>
-                  </div>
-                  <div class="section">
-                    <div class="tweet-text">
-                      {{ tweet.text }}
-                    </div>
-                    <div class="center tweet-media" v-if="tweet.extended_entities">
-                      <div class="tweet-medium" v-if="tweet.extended_entities.media.length > 1" v-for="media in tweet.extended_entities.media" v-bind:key="media.id">
-                        <img v-if="media.type === 'photo'" class="responsive-img tweet-picture" v-bind:src="media.media_url">
-                      </div>
-                      <div class="tweet-medium-one valign-wrapper" v-if="tweet.extended_entities.media.length === 1" v-for="media in tweet.extended_entities.media" v-bind:key="media.id">
-                        <img v-if="media.type === 'photo'" class="responsive-img tweet-picture-one" v-bind:src="media.media_url">
-                        <video v-if="media.type === 'video'" class="responsive-video tweet-video" width="430" height="240" controls>
-                          <source v-bind:src="media.video_info.variants[0].url">
-                        </video>
-                      </div>
-                    </div>
-                    <div class="fav-retweet">
-                      <div class="fav-retweet-div">
-                        <i class="material-icons left black-text fav-retweet-icons">repeat</i>{{ tweet.favorite_count }}
-                      </div>
-                      <div class="fav-retweet-div">
-                        <i class="material-icons left black-text fav-retweet-icons">favorite_border</i>{{ tweet.retweet_count }}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div> -->
               <!-- リツイート -->
               <div v-if="tweet.retweeted_status" class="row tweet-content-row retweet">
                 <div class="col s12 retweet-label">
@@ -116,9 +78,6 @@
                     <div class="tweet-text">
                       {{ tweet.retweeted_status.text }}
                     </div>
-                    <!-- <div class="center tweet-pictures" v-if="tweet.retweeted_status.extended_entities">
-                      <img class="responsive-img tweet-picture" v-for="picture in tweet.retweeted_status.extended_entities.media" v-bind:key="picture.id" v-bind:src="picture.media_url">
-                    </div> -->
                     <div class="center tweet-media" v-if="tweet.extended_entities">
                       <div class="tweet-medium" v-if="tweet.extended_entities.media.length > 1" v-for="media in tweet.extended_entities.media" v-bind:key="media.id">
                         <img v-if="media.type === 'photo'" class="responsive-img tweet-picture" v-bind:src="media.media_url">
@@ -158,9 +117,6 @@
                     <div class="tweet-text">
                       {{ tweet.text }}
                     </div>
-                    <!-- <div class="center tweet-pictures" v-if="tweet.extended_entities">
-                      <img class="responsive-img tweet-picture" v-for="picture in tweet.extended_entities.media" v-bind:key="picture.id" v-bind:src="picture.media_url">
-                    </div> -->
                     <div class="center tweet-media" v-if="tweet.extended_entities">
                       <div class="tweet-medium" v-if="tweet.extended_entities.media.length > 1" v-for="media in tweet.extended_entities.media" v-bind:key="media.id">
                         <img v-if="media.type === 'photo'" class="responsive-img tweet-picture" v-bind:src="media.media_url">
@@ -193,7 +149,6 @@
 
 <script>
 import axios from 'axios'
-import Words from '../store/index.js'
 
 export default {
   name: 'Search',
@@ -261,9 +216,12 @@ export default {
           console.log(error)
         })
     },
-    storeWord: function () {
-      if (this.word !== '') {
-        Words.commit('addWord', this.query)
+    storeQueryWord: function () {
+      if (this.query !== '') {
+        this.$store.commit('addQuery', this.query)
+      }
+      if (this.labelWords !== '') {
+        this.$store.commit('addWords', this.labelWords)
       }
     }
   }
@@ -320,22 +278,19 @@ export default {
   margin: 0 0 0 5px;
 }
 
-/* ここより下MyFeedsのフィード部分と共通 */
 .result-feed {
   height: 100%;
-  margin: 10px 0 0 0;
+  margin: 12px 0 0 0;
   padding: 0 5px 0 5px;
   border-right: solid 2px #00acc155;
   border-left: solid 2px #00acc155;
 }
 
-/* 共通でない */
 .result-words {
   padding: 10px 0 10px 0;
   margin-bottom: 2px;
 }
 
-/* 共通でない */
 .result-word {
   font-size: 1.5em;
   margin: 5px;
@@ -382,7 +337,6 @@ export default {
   margin: 5px 0 10px 0;
 }
 
-/* TODO: メディア部分の変更フィードページにも反映 */
 .tweet-media {
   display: flex;
   height: 330px;

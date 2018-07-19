@@ -3,12 +3,29 @@ import Vuex from 'vuex'
 
 Vue.use(Vuex)
 
+const Queries = {
+  state: {
+    queries: []
+  },
+  mutations: {
+    addQuery (state, word) {
+      state.queries.push(word)
+    }
+  },
+  actions: {},
+  getters: {
+    getQueries (state) {
+      return state.queries
+    }
+  }
+}
+
 const Words = {
   state: {
     words: []
   },
   mutations: {
-    addWord (state, word) {
+    addWords (state, word) {
       state.words.push(word)
     }
   },
@@ -22,6 +39,7 @@ const Words = {
 
 export default new Vuex.Store({
   modules: {
+    Queries,
     Words
   }
 })
