@@ -2,9 +2,9 @@
   <div id="app">
     <nav>
       <div class="nav-wrapper blue lighten-2">
-        <router-link to="/" class="brand-logo center">Logo</router-link>
+        <router-link to="/" class="brand-logo center">"ロゴ"</router-link>
         <ul id="nav-mobile" class="right hide-on-med-and-down">
-          <li><a href="">What's this site ?</a></li>
+          <li><a href="">"サイト名" とは？</a></li>
         </ul>
       </div>
     </nav>
@@ -12,9 +12,9 @@
     <div class="row main-area">
       <div class="col s2 blue lighten-1 side-bar">
         <ul class="sidenav">
-          <li><router-link to="/search" class="black-text"><i class="material-icons left black-text">search</i>Search</router-link></li>
+          <li><router-link to="/search" class="black-text"><i class="material-icons left black-text">search</i>検索</router-link></li>
           <br />
-          <li><router-link to="/myfeeds" class="black-text"><i class="material-icons left black-text">format_align_left</i>MyFeeds</router-link></li>
+          <li><router-link to="/myfeeds" class="black-text"><i class="material-icons left black-text">format_align_left</i>マイフィード</router-link></li>
         </ul>
       </div>
       <div class="col s10 router-area">

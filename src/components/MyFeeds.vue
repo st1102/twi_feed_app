@@ -1,7 +1,12 @@
 <template>
   <div class="main">
     <div class="result-feeds">
-      <div v-for="(query, index) in queries" v-bind:key="query" class="result-feed">
+      <div v-if="queries.length === 0" class="no-feed-div valign-wrapper">
+        <span class="no-feed-text blue-text">
+          Search words and Add your original feed !!
+        </span>
+      </div>
+      <div v-else v-for="(query, index) in queries" v-bind:key="query" class="result-feed">
         <!-- <h5 class="result-word z-depth-2">{{ query }}</h5> -->
         <div class="result-words z-depth-2">
           <span v-for="word in labelWords[index]" v-if="word !== ''" v-bind:key="word" class="result-word card blue lighten-5">{{ word }}</span>
@@ -139,8 +144,18 @@ export default {
 .result-feeds {
   display: flex;
   height: 100%;
-  margin: 12px 0 0 0;
   overflow-x: scroll;
+}
+
+.no-feed-div {
+  height: 100%;
+  width: 100%;
+}
+
+.no-feed-text {
+  display: inline-block;
+  width: 100%;
+  font-size: 2.5em;
 }
 
 .retweet-label {
@@ -154,16 +169,19 @@ export default {
 .result-feed {
   height: 100%;
   width: 400px;
+  margin: 12px 0 0 0;
   padding: 0 5px 0 5px;
   border-right: solid 2px #00acc155;
   border-left: solid 2px #00acc155;
 }
+
 .result-words {
-  padding: 10px 0 10px 0;
-  margin-bottom: 2px;
+  height: 54px;
+  vertical-align: middle;
 }
 
 .result-word {
+  display: inline-block;
   font-size: 1.5em;
   margin: 5px;
   padding: 5px;

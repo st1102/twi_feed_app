@@ -5,7 +5,7 @@
       <div class="col s4 search-col">
         <div class="row">
           <div class="input-field col s12">
-            <input id="search-word" v-model="parameters.word" v-on:keyup.enter="submit" type="text">
+            <input id="search-word" v-model="parameters.word" v-on:keyup.enter="submit" type="text" autocomplete="off">
             <label for="search-word">キーワード</label>
           </div>
           <div class="input-field col s12">
@@ -47,6 +47,9 @@
               <label class="left" for="search-both">全て</label>
             </div>
           </div>
+          <button class="btn waves-effect waves-light submit-btn right blue darken-1" v-on:click="submit">検索
+            <i class="material-icons right">search</i>
+          </button>
         </div>
       </div>
       <!-- result area -->
@@ -55,8 +58,13 @@
           <div class="result-words z-depth-2">
             <span v-for="word in labelWords" v-if="word !== ''" v-bind:key="word" class="result-word card blue lighten-5">{{ word }}</span>
           </div>
-          <a class="btn-floating btn-large waves-effect waves-light red add-button" v-on:click="storeQueryWord"><i class="material-icons">playlist_add</i></a>
-          <ul class="collection tweet-list">
+          <a class="btn-floating btn-large waves-effect waves-light blue add-button" v-on:click="storeQueryWord"><i class="material-icons">playlist_add</i></a>
+          <div v-if="tweets.length === 0" class="no-tweets-outer">
+            <div class="no-tweets-inner">
+              <span class="no-tweets-text blue-text valign-wrapper">no result<i class="material-icons no-tweets-icon medium blue-text">sentiment_neutral</i></span>
+            </div>
+          </div>
+          <ul v-else class="collection tweet-list">
             <li v-for="tweet in tweets" v-bind:key="tweet.id" class="collection-item">
               <!-- リツイート -->
               <div v-if="tweet.retweeted_status" class="row tweet-content-row retweet">
@@ -220,7 +228,7 @@ export default {
       if (this.query !== '') {
         this.$store.commit('addQuery', this.query)
       }
-      if (this.labelWords !== '') {
+      if (this.labelWords.length !== 0) {
         this.$store.commit('addWords', this.labelWords)
       }
     }
@@ -259,6 +267,10 @@ export default {
   margin: 5px 0 5px 0;
 }
 
+.submit-btn {
+  margin: 36px 0 0 0;
+}
+
 .result-col {
   height: 100%;
 }
@@ -268,6 +280,27 @@ export default {
   /* ヘッダー+ラベル-ボタンの高さの半分 */
   top: calc((64px + 12px) + (47px + 2px) - 28px);
   right: 5%;
+}
+
+.no-tweets-outer {
+  height: 100%;
+  width: 100%;
+}
+
+.no-tweets-inner {
+  /* TODO: もっと良い形に改善 */
+  position: relative;
+  top: 40%;
+  left: 35%;
+}
+
+.no-tweets-text {
+  font-size: 2.5em;
+}
+
+.no-tweets-icon {
+  margin: 0 0 0 8px;
+  font-size: 1em;
 }
 
 .retweet-label {
@@ -287,11 +320,12 @@ export default {
 }
 
 .result-words {
-  padding: 10px 0 10px 0;
-  margin-bottom: 2px;
+  vertical-align: middle;
+  height: 54px;
 }
 
 .result-word {
+  display: inline-block;
   font-size: 1.5em;
   margin: 5px;
   padding: 5px;
