@@ -14,7 +14,7 @@
         <ul class="collection tweet-list">
           <li v-for="tweet in wordsAndTweets[query]" v-bind:key="tweet.id" class="collection-item">
             <!-- リツイート -->
-            <div v-if="tweet.retweeted_status" class="row tweet-content-row retweet">
+            <!-- <div v-if="tweet.retweeted_status" class="row tweet-content-row retweet">
               <div class="col s12 retweet-label">
                 <i class="material-icons left green-text fav-retweet-icons">repeat</i><span class="left retweet-username">{{tweet.user.name}} Retweeted</span>
               </div>
@@ -54,9 +54,9 @@
                   </div>
                 </div>
               </div>
-            </div>
+            </div> -->
             <!-- リツイートでない -->
-            <div v-else class="row tweet-content-row">
+            <div class="row tweet-content-row">
               <div class="col s2 profile-img-col">
                 <img class="circle profile-img" v-bind:src="tweet.user.profile_image_url.replace('_normal.jpg', '_bigger.jpg')">
               </div>
@@ -258,6 +258,7 @@ export default {
   height: 95%;
   background-color: #000;
   border: solid 1px #fff;
+  border-radius: 10px;
 }
 
 .tweet-picture-one {
@@ -266,6 +267,7 @@ export default {
   height: 100%;
   background-color: #000;
   border: solid 1px #fff;
+  border-radius: 10px;
 }
 
 .tweet-video {
