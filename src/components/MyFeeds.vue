@@ -9,10 +9,10 @@
       <div v-else v-for="(query, index) in queries" v-bind:key="query" class="result-feed">
         <!-- <h5 class="result-word z-depth-2">{{ query }}</h5> -->
         <div class="result-words z-depth-2">
-          <span v-for="word in labelWords[index]" v-if="word !== ''" v-bind:key="word" class="result-word card blue lighten-5">{{ word }}</span>
+          <span v-for="word in labelWords[index]" v-if="word !== ''" v-bind:key="word" class="result-word blue lighten-5">{{ word }}</span>
         </div>
         <ul class="collection tweet-list">
-          <li v-for="tweet in wordsAndTweets[query]" v-bind:key="tweet.id" class="collection-item">
+          <li v-for="tweet in wordsAndTweets[query]" v-bind:key="tweet.id" class="collection-item one-tweet">
             <!-- リツイート -->
             <!-- <div v-if="tweet.retweeted_status" class="row tweet-content-row retweet">
               <div class="col s12 retweet-label">
@@ -62,11 +62,12 @@
               </div>
               <div class="col s10 user-text">
                 <div class="section">
-                  <span class="name-id">
+                  <span class="name-id-icon">
                     <span class="user-name">{{ tweet.user.name }}</span>
                     <span>@{{ tweet.user.screen_name }}</span>
                   </span>
-                  <span class="tweet-time right">{{ new Date(tweet.created_at).getMonth() }}月{{ new Date(tweet.created_at).getDate() }}日 {{ ('00' + new Date(tweet.created_at).getHours()).slice(-2) }}:{{ ('00' + new Date(tweet.created_at).getMinutes()).slice(-2) }}</span>
+                  <span class="verified-icon-span" v-if="tweet.user.verified"><i class="verified-icon material-icons blue-text text-lighten-3">check_circle</i></span>
+                  <span class="tweet-time right">{{ new Date(tweet.created_at).getMonth()+1 }}月{{ new Date(tweet.created_at).getDate() }}日 {{ ('00' + new Date(tweet.created_at).getHours()).slice(-2) }}:{{ ('00' + new Date(tweet.created_at).getMinutes()).slice(-2) }}</span>
                 </div>
                 <div class="section">
                   <div class="tweet-text">
@@ -169,6 +170,8 @@ export default {
 .result-feed {
   height: 100%;
   width: 400px;
+  flex-grow: 0;
+  flex-shrink: 0;
   margin: 12px 0 0 0;
   padding: 0 5px 0 5px;
   border-right: solid 2px #00acc155;
@@ -176,8 +179,10 @@ export default {
 }
 
 .result-words {
-  height: 54px;
+  min-height: 54px;
   vertical-align: middle;
+  overflow-x: scroll;
+  white-space: nowrap;
 }
 
 .result-word {
@@ -185,12 +190,19 @@ export default {
   font-size: 1.5em;
   margin: 5px;
   padding: 5px;
+  white-space: nowrap;
+  border-radius: 2px;
+  box-shadow: 0px 1px 2px #00000055;
 }
 
 .tweet-list {
   height: calc(100% - (47px + 2px));
   overflow: scroll;
   margin: 0;
+}
+
+.one-tweet {
+  border-bottom: solid 1px #eeeeee !important;
 }
 
 .tweet-content-row {
@@ -205,20 +217,31 @@ export default {
   padding: 0;
 }
 
+.name-id-icon {
+  display: inline-block;
+  width: 60%;
+  /* height: 1.8em;
+  line-height: 1.6; */
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  vertical-align: middle;
+}
+
 .user-name {
   font-weight: bold;
 }
 
-.name-id {
-  display: inline-block;
-  width: 60%;
-  height: 1.8em;
-  line-height: 1.6;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
+.verified-icon-span{
+  /* display: inline-block; */
 }
 
+.verified-icon {
+  display: inline-block;
+  /* padding: 0 0 5px 0; */
+  font-size: 1.2em;
+  vertical-align: middle;
+}
 .profile-img {
   width: 50px;
 }
@@ -273,7 +296,8 @@ export default {
 .tweet-video {
   display: inline-block;
   width: 100%;
-  height: auto;
+  height: 100%;
+  object-fit: contain;
 }
 
 .fav-retweet {

@@ -56,7 +56,7 @@
       <div class="col s8 result-col">
         <div class="result-feed">
           <div class="result-words z-depth-2">
-            <span v-for="word in labelWords" v-if="word !== ''" v-bind:key="word" class="result-word card blue lighten-5">{{ word }}</span>
+            <span v-for="word in labelWords" v-if="word !== ''" v-bind:key="word" class="result-word blue lighten-5">{{ word }}</span>
           </div>
           <a class="btn-floating btn-large waves-effect waves-light blue add-button" v-on:click="storeQueryWord"><i class="material-icons">playlist_add</i></a>
           <div v-if="tweets.length === 0" class="no-tweets-outer">
@@ -65,7 +65,7 @@
             </div>
           </div>
           <ul v-else class="collection tweet-list">
-            <li v-for="tweet in tweets" v-bind:key="tweet.id" class="collection-item">
+            <li v-for="tweet in tweets" v-bind:key="tweet.id" class="collection-item one-tweet">
               <!-- リツイート -->
               <!-- <div v-if="tweet.retweeted_status" class="row tweet-content-row retweet">
                 <div class="col s12 retweet-label">
@@ -76,7 +76,7 @@
                 </div>
                 <div class="col s10 user-text">
                   <div class="section">
-                    <span class="name-id">
+                    <span class="name-id-icon">
                       <span class="user-name">{{ tweet.retweeted_status.user.name }}</span>
                       <span>@{{ tweet.retweeted_status.user.screen_name }}</span>
                     </span>
@@ -115,11 +115,12 @@
                 </div>
                 <div class="col s10 user-text">
                   <div class="section">
-                    <span class="name-id">
+                    <span class="name-id-icon">
                       <span class="user-name">{{ tweet.user.name }}</span>
+                      <span class="verified-icon-span" v-if="tweet.user.verified"><i class="verified-icon material-icons blue-text text-lighten-3">check_circle</i></span>
                       <span>@{{ tweet.user.screen_name }}</span>
                     </span>
-                    <span class="tweet-time right">{{ new Date(tweet.created_at).getMonth() }}月{{ new Date(tweet.created_at).getDate() }}日 {{ ('00' + new Date(tweet.created_at).getHours()).slice(-2) }}:{{ ('00' + new Date(tweet.created_at).getMinutes()).slice(-2) }}</span>
+                    <span class="tweet-time right">{{ new Date(tweet.created_at).getMonth()+1 }}月{{ new Date(tweet.created_at).getDate() }}日 {{ ('00' + new Date(tweet.created_at).getHours()).slice(-2) }}:{{ ('00' + new Date(tweet.created_at).getMinutes()).slice(-2) }}</span>
                   </div>
                   <div class="section">
                     <div class="tweet-text">
@@ -240,6 +241,7 @@ export default {
 <style scoped>
 .search {
   height: 100%;
+  overflow: hidden;
 }
 
 .search-col {
@@ -320,8 +322,10 @@ export default {
 }
 
 .result-words {
+  min-height: 54px;
   vertical-align: middle;
-  height: 54px;
+  overflow-x: scroll;
+  white-space: nowrap;
 }
 
 .result-word {
@@ -329,12 +333,19 @@ export default {
   font-size: 1.5em;
   margin: 5px;
   padding: 5px;
+  white-space: nowrap;
+  border-radius: 2px;
+  box-shadow: 0px 1px 2px #00000055;
 }
 
 .tweet-list {
   height: calc(100% - (47px + 2px));
   overflow: scroll;
   margin: 0;
+}
+
+.one-tweet {
+  border-bottom: solid 1px #eeeeee !important;
 }
 
 .tweet-content-row {
@@ -349,18 +360,30 @@ export default {
   padding: 0;
 }
 
+.name-id-icon {
+  display: inline-block;
+  width: 60%;
+  /* height: 1.8em;
+  line-height: 1.6; */
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  vertical-align: middle;
+}
+
 .user-name {
   font-weight: bold;
 }
 
-.name-id {
+.verified-icon-span{
   display: inline-block;
-  width: 60%;
-  height: 1.8em;
-  line-height: 1.6;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
+}
+
+.verified-icon {
+  display: inline-block;
+  padding: 0 0 5px 0;
+  font-size: 1.2em;
+  vertical-align: middle;
 }
 
 .profile-img {
@@ -410,7 +433,8 @@ export default {
 .tweet-video {
   display: inline-block;
   width: 100%;
-  height: auto;
+  height: 100%;
+  object-fit: contain;
 }
 
 .fav-retweet {
