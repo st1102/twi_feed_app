@@ -71,7 +71,7 @@
                 </div>
                 <div class="section">
                   <div class="tweet-text">
-                    {{ tweet.text }}
+                    {{ tweet.full_text }}
                   </div>
                   <div class="center tweet-media" v-if="tweet.extended_entities">
                     <div class="tweet-medium" v-if="tweet.extended_entities.media.length > 1" v-for="media in tweet.extended_entities.media" v-bind:key="media.id">

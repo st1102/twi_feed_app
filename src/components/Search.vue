@@ -124,7 +124,7 @@
                   </div>
                   <div class="section">
                     <div class="tweet-text">
-                      {{ tweet.text }}
+                      {{ tweet.full_text }}
                     </div>
                     <div class="center tweet-media" v-if="tweet.extended_entities">
                       <div class="tweet-medium" v-if="tweet.extended_entities.media.length > 1" v-for="media in tweet.extended_entities.media" v-bind:key="media.id">
@@ -215,6 +215,7 @@ export default {
       this.wordLabel = wL
       this.labelWords = this.wordLabel.split(',')
       this.query = q + ' exclude:retweets'
+      console.log(this.query)
 
       axios.get('http://localhost:3030/twitter/search?q=' + this.query)
         .then((response) => {
@@ -241,7 +242,7 @@ export default {
 <style scoped>
 .search {
   height: 100%;
-  overflow: hidden;
+  overflow-x: hidden;
 }
 
 .search-col {
