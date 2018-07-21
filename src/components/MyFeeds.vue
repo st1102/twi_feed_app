@@ -18,8 +18,8 @@
               <div class="col s12 retweet-label">
                 <i class="material-icons left green-text fav-retweet-icons">repeat</i><span class="left retweet-username">{{tweet.user.name}} Retweeted</span>
               </div>
-              <div class="col s2">
-                <img class="circle responsive-img" v-bind:src="tweet.retweeted_status.user.profile_image_url.replace('_normal.jpg', '_bigger.jpg')">
+              <div class="col s2 profile-img-col">
+                <img class="circle profile-img" v-bind:src="tweet.retweeted_status.user.profile_image_url.replace('_normal.jpg', '_bigger.jpg')">
               </div>
               <div class="col s10 user-text">
                 <div class="section">
@@ -57,8 +57,8 @@
             </div>
             <!-- リツイートでない -->
             <div v-else class="row tweet-content-row">
-              <div class="col s2">
-                <img class="circle responsive-img" v-bind:src="tweet.user.profile_image_url.replace('_normal.jpg', '_bigger.jpg')">
+              <div class="col s2 profile-img-col">
+                <img class="circle profile-img" v-bind:src="tweet.user.profile_image_url.replace('_normal.jpg', '_bigger.jpg')">
               </div>
               <div class="col s10 user-text">
                 <div class="section">
@@ -217,6 +217,14 @@ export default {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+}
+
+.profile-img {
+  width: 50px;
+}
+
+.profile-img-col {
+  padding-left: 0;
 }
 
 .tweet-time {
