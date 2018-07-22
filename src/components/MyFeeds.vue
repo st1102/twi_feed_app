@@ -72,6 +72,39 @@
                 <div class="section">
                   <div class="tweet-text">
                     {{ tweet.full_text }}
+                    <div v-if="tweet.quoted_status" class="quoted-tweet">
+                      <div class="section">
+                        <span class="name-id-icon">
+                          <span class="user-name">{{ tweet.quoted_status.user.name }}</span>
+                          <span class="verified-icon-span" v-if="tweet.quoted_status.user.verified"><i class="verified-icon material-icons blue-text text-lighten-3">check_circle</i></span>
+                          <span>@{{ tweet.quoted_status.user.screen_name }}</span>
+                        </span>
+                      </div>
+                      <div class="section">
+                        <div class="tweet-text">
+                          {{ tweet.quoted_status.full_text }}
+                        </div>
+                        <div class="center tweet-media" v-if="tweet.quoted_status.extended_entities">
+                          <div class="tweet-medium" v-if="tweet.quoted_status.extended_entities.media.length > 1" v-for="media in tweet.quoted_status.extended_entities.media" v-bind:key="media.id">
+                            <img v-if="media.type === 'photo'" class="responsive-img tweet-picture" v-bind:src="media.media_url">
+                          </div>
+                          <div class="tweet-medium-one valign-wrapper" v-if="tweet.quoted_status.extended_entities.media.length === 1" v-for="media in tweet.quoted_status.extended_entities.media" v-bind:key="media.id">
+                            <img v-if="media.type === 'photo'" class="responsive-img tweet-picture-one" v-bind:src="media.media_url">
+                            <video v-if="media.type === 'video'" class="responsive-video tweet-video" width="430" height="240" controls>
+                              <source v-bind:src="media.video_info.variants[0].url">
+                            </video>
+                          </div>
+                        </div>
+                        <div class="fav-retweet">
+                          <div class="fav-retweet-div">
+                            <i class="material-icons left black-text fav-retweet-icons">repeat</i>{{ tweet.quoted_status.favorite_count }}
+                          </div>
+                          <div class="fav-retweet-div">
+                            <i class="material-icons left black-text fav-retweet-icons">favorite_border</i>{{ tweet.quoted_status.retweet_count }}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                   <div class="center tweet-media" v-if="tweet.extended_entities">
                     <div class="tweet-medium" v-if="tweet.extended_entities.media.length > 1" v-for="media in tweet.extended_entities.media" v-bind:key="media.id">
@@ -256,6 +289,13 @@ export default {
 
 .tweet-text {
   margin: 5px 0 10px 0;
+}
+
+.quoted-tweet {
+  margin: 10px 0 10px 0;
+  padding: 10px;
+  border: solid 1px #00000033;
+  border-radius: 5px;
 }
 
 .tweet-media {
