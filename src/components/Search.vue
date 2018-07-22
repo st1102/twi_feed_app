@@ -215,6 +215,7 @@ export default {
     submit: function () {
       let wL = ''
       let q = ''
+      let hasImages = false
       for (let param in this.parameters) { // クエリに使うパラメータを組み立て
         if (this.parameters[param] !== '' && this.parameters[param] !== null && this.parameters[param] !== undefined && this.parameters[param] !== false) {
           if (param === 'word') {
@@ -237,9 +238,15 @@ export default {
           } else if (param === 'images') {
             q += 'filter:' + param + ' '
             wL += '画像あり' + ','
+            hasImages = true
           } else if (param === 'videos') {
-            q += 'filter:' + param + ' '
-            wL += '動画あり' + ','
+            if (hasImages) {
+              q = q.replace('filter:images', 'filter:media')
+              wL += '動画あり' + ','
+            } else {
+              q += 'filter:' + param + ' '
+              wL += '動画あり' + ','
+            }
           // } else if (param === 'area') {
           //   q += 'near:' + this.parameters[param] + ' '
           }
