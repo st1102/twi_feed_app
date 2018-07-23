@@ -185,6 +185,18 @@
           </ul>
         </div>
       </div>
+      <!-- Modal Trigger -->
+      <a class="waves-effect waves-light btn modal-trigger" href="#user-prof">Modal</a>
+      <!-- Modal Structure -->
+      <div id="user-prof" class="modal">
+        <div class="modal-content">
+          <h4>Modal Header</h4>
+          <p>A bunch of text</p>
+        </div>
+        <div class="modal-footer">
+          <a href="#!" class="modal-close waves-effect waves-green btn-flat">Agree</a>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -274,6 +286,11 @@ export default {
         this.$store.commit('addWords', this.labelWords)
       }
     }
+  },
+  mounted () {
+    $(document).ready(function () {
+      $('.modal').modal()
+    })
   }
 }
 </script>
@@ -428,7 +445,7 @@ export default {
 }
 
 .profile-img {
-  width: 50px;
+  width: 60px;
 }
 
 .tweet-text {
