@@ -116,7 +116,8 @@
                 <div class="col s10 user-text">
                   <div class="section">
                     <span class="name-id-icon">
-                      <span class="user-name">{{ tweet.user.name }}</span>
+                      <!-- ユーザプロフィールのトリガー -->
+                      <a class="modal-trigger prof-modal-trigger black-text" href="#user-prof" v-on:click="getUserProf(tweet.user.screen_name)"><span class="user-name">{{ tweet.user.name }}</span></a>
                       <span class="verified-icon-span" v-if="tweet.user.verified"><i class="verified-icon material-icons blue-text text-lighten-3">check_circle</i></span>
                       <span>@{{ tweet.user.screen_name }}</span>
                     </span>
@@ -186,15 +187,58 @@
         </div>
       </div>
       <!-- Modal Trigger -->
-      <a class="waves-effect waves-light btn modal-trigger" href="#user-prof">Modal</a>
+      <!-- <a class="waves-effect waves-light btn modal-trigger" href="#user-prof">Modal</a> -->
       <!-- Modal Structure -->
       <div id="user-prof" class="modal">
-        <div class="modal-content">
-          <h4>Modal Header</h4>
-          <p>A bunch of text</p>
+        <div class="">
+          <span href="#!" class="modal-close waves-effect waves-green btn-flat left"><i class="material-icons modal-close-icon">close</i></span>
         </div>
-        <div class="modal-footer">
-          <a href="#!" class="modal-close waves-effect waves-green btn-flat">Agree</a>
+        <div class="modal-content">
+          <div class="modal-content-row row">
+            <div class="user-prof-info col s4">
+              <div class="prof-info-row row">
+                <div class="user-prof-img col s12">
+                  <img class="circle responsive-img modal-prof-img left" v-bind:src="profInfo.image.replace('_normal.jpg', '_bigger.jpg')">
+                </div>
+                <div class="prof-name-col col s12">
+                  <span class="left prof-name left-align">{{profInfo.name}}</span>
+                </div>
+                <div class="user-prof-id col s12">
+                  <span class="left prof-id left-align">＠{{profInfo.id}}</span>
+                </div>
+                <div class="user-prof-ff col s12">
+                  <div class="ff-row">
+                    <div class="prof-follow-col col s6">
+                      <div class="prof-follow-label">フォロー</div>
+                      <div class="prof-follow">{{profInfo.follow}}</div>
+                    </div>
+                    <div class="prof-follower-col col s6">
+                      <div class="prof-follower-label">フォロワー</div>
+                      <div class="prof-follower">{{profInfo.follower}}</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="user-prof-location col s12">
+                  <span class="left prof-location left-align valign-wrapper"><i class="material-icons left location-icon">location_on</i>{{profInfo.location}}</span>
+                </div>
+                <div class="user-prof-desc col s12">
+                  <span class="left prof-desc left-align">{{profInfo.desc}}</span>
+                </div>
+                <div class="user-prof-date col s12">
+                  <span class="left prof-date left-align valign-wrapper"><i class="material-icons left join-icon">perm_contact_calendar</i>{{ new Date(profInfo.date).getFullYear() }}年{{ new Date(profInfo.date).getMonth()+1 }}月{{ new Date(profInfo.date).getDate() }}日から</span>
+                </div>
+              </div>
+            </div>
+            <div class="user-tweets col s8">
+              <div class="user-tweets-header z-depth-2 valign-wrapper">
+                <span class="user-tweets-label">Tweets</span>
+              </div>
+              <a class="btn-floating btn-large waves-effect waves-light blue user-add-button"><i class="material-icons">playlist_add</i></a>
+              <ul class="user-tweet-list collection">
+                <li class="user-tweet collection-item">ツイート</li>
+              </ul>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -220,7 +264,17 @@ export default {
       query: '',
       wordLabel: '',
       labelWords: [],
-      tweets: []
+      tweets: [],
+      profInfo: {
+        image: '',
+        name: '',
+        id: '',
+        follow: '',
+        follower: '',
+        location: '',
+        desc: '',
+        date: ''
+      }
     }
   },
   methods: {
@@ -285,6 +339,24 @@ export default {
       if (this.labelWords.length !== 0) {
         this.$store.commit('addWords', this.labelWords)
       }
+    },
+    getUserProf: function (screenName) {
+      console.log(screenName)
+      axios.get('http://localhost:3030/twitter/user?screen_name=' + screenName)
+        .then((response) => {
+          console.log(response)
+          this.profInfo.image = response.data.profile_image_url
+          this.profInfo.name = response.data.name
+          this.profInfo.id = response.data.screen_name
+          this.profInfo.follow = response.data.friends_count
+          this.profInfo.follower = response.data.followers_count
+          this.profInfo.location = response.data.location
+          this.profInfo.desc = response.data.description
+          this.profInfo.date = response.data.created_at
+        })
+        .catch((error) => {
+          console.log(error)
+        })
     }
   },
   mounted () {
@@ -512,5 +584,95 @@ export default {
 
 .fav-retweet-icons {
   margin: 0;
+}
+
+.prof-modal-trigger {
+  text-decoration: none;
+}
+
+.prof-modal-trigger:hover {
+  text-decoration: underline;
+}
+
+.modal-close {
+  display: inline-block;
+  padding: 0;
+  margin: 0 5px 0 5px;
+  font-size: 1em;
+}
+
+.modal-close-icon {
+  font-size: 2rem;
+}
+
+.modal-content-row {
+  display: flex;
+}
+
+.modal-prof-img {
+  width: 80px;
+}
+
+.user-prof-name {
+  margin: 5px 0 0 0;
+  font-weight: bold;
+}
+
+.user-prof-id {
+  font-weight: lighter;
+}
+
+.user-prof-ff {
+  margin: 5px 0 0 0;
+}
+
+.prof-follow-col {
+  padding: 0;
+}
+
+.prof-follower-col {
+  padding: 0;
+}
+
+.user-prof-location {
+  margin: 10px 0 0 0;
+}
+
+.location-icon {
+  margin: 0;
+}
+
+.user-prof-desc {
+  margin: 10px 0 0 0;
+}
+
+.user-prof-date {
+  margin: 10px 0 0 0;
+}
+
+.join-icon {
+  margin: 0;
+}
+
+.user-tweets {
+  padding: 0 4px 0 4px;
+  border-right: solid 2px #00acc155;
+  border-left: solid 2px #00acc155;
+}
+
+.user-tweets-header {
+  height: 40px;
+}
+
+.user-tweets-label {
+  width: 100%;
+  font-size: 1.6em;
+  font-weight: bold;
+}
+
+.user-add-button {
+  position: absolute;
+  top: 34px;
+  right: 8%;
 }
 </style>
