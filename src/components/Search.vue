@@ -125,7 +125,18 @@
                   </div>
                   <div class="section">
                     <div class="tweet-text">
-                      {{ tweet.full_text }}
+                      <div v-if="tweet.entities.urls" class="text-with-urls" v-html="replaceUrls(tweet.full_text, tweet.entities.urls)">
+                        <!-- {{ tweet.full_text }} -->
+                        <!-- {{ tweetText[tweet.id] }} -->
+                      </div>
+                      <div v-else-if="tweet.entities.user_mentions" class="text-with-mentions">
+                        <!-- {{ tweet.full_text }} -->
+                        {{ tweetText[tweet.id] }}
+                      </div>
+                      <div v-else class="text-with-mothing">
+                        <!-- {{ tweet.full_text }} -->
+                        {{ tweetText[tweet.id] }}
+                      </div>
                       <div v-if="tweet.quoted_status" class="quoted-tweet">
                         <div class="section">
                           <span class="name-id-icon">
@@ -218,7 +229,7 @@
                     </div>
                   </div>
                 </div>
-                <div class="user-prof-location col s12">
+                <div v-if="profInfo.location" class="prof-location-col col s12">
                   <span class="left prof-location left-align valign-wrapper"><i class="material-icons left location-icon">location_on</i>{{profInfo.location}}</span>
                 </div>
                 <div class="user-prof-desc col s12">
@@ -265,6 +276,8 @@ export default {
       wordLabel: '',
       labelWords: [],
       tweets: [],
+      tweetText: [],
+      // url: '',
       profInfo: {
         image: '',
         name: '',
@@ -274,6 +287,7 @@ export default {
         location: '',
         desc: '',
         date: ''
+        // background: ''
       }
     }
   },
@@ -322,11 +336,20 @@ export default {
       this.labelWords = this.wordLabel.split(',')
       this.query = q + ' exclude:retweets'
       console.log(this.query)
-
+      // let count = 0
       axios.get('http://localhost:3030/twitter/search?q=' + this.query)
         .then((response) => {
           console.log(response)
           this.tweets = response.data.statuses
+          // for (let tweet of this.tweets) {
+          //   this.tweetText[tweet.id] = tweet.full_text
+          //   if (tweet.entities.urls.length !== 0) {
+          //     for (let url of tweet.entities.urls) {
+          //       // this.url = url.url
+          //       this.tweetText[tweet.id] = this.tweetText[tweet.id].replace(url.url, '<a href=' + url.url + '>' + url.url + '</a>')
+          //     }
+          //   }
+          // }
         })
         .catch((error) => {
           console.log(error)
@@ -353,10 +376,17 @@ export default {
           this.profInfo.location = response.data.location
           this.profInfo.desc = response.data.description
           this.profInfo.date = response.data.created_at
+          // this.profInfo.background = '#' + response.data.profile_background_color
         })
         .catch((error) => {
           console.log(error)
         })
+    },
+    replaceUrls: function (text, urls) {
+      for (let url of urls) {
+        text = text.replace(url.url, '<a href="' + url.url + '"' + 'target="_blank">' + url.url + '</a>')
+      }
+      return text
     }
   },
   mounted () {
@@ -611,18 +641,19 @@ export default {
 
 .modal-prof-img {
   width: 80px;
+  border: solid 2px #42a5f5;
 }
 
-.user-prof-name {
-  margin: 5px 0 0 0;
+.prof-name {
+  margin: 10px 0 0 0;
   font-weight: bold;
 }
 
-.user-prof-id {
+.prof-id {
   font-weight: lighter;
 }
 
-.user-prof-ff {
+.prof-ff {
   margin: 5px 0 0 0;
 }
 
@@ -634,7 +665,7 @@ export default {
   padding: 0;
 }
 
-.user-prof-location {
+.prof-location-col {
   margin: 10px 0 0 0;
 }
 
@@ -642,11 +673,11 @@ export default {
   margin: 0;
 }
 
-.user-prof-desc {
+.prof-desc {
   margin: 10px 0 0 0;
 }
 
-.user-prof-date {
+.prof-date {
   margin: 10px 0 0 0;
 }
 
