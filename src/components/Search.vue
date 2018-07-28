@@ -125,17 +125,27 @@
                   </div>
                   <div class="section">
                     <div class="tweet-text">
-                      <div v-if="tweet.entities.urls" class="text-with-urls" v-html="replaceUrls(tweet.full_text, tweet.entities.urls)">
-                        <!-- {{ tweet.full_text }} -->
-                        <!-- {{ tweetText[tweet.id] }} -->
+                      <div v-if="tweet.entities.media">
+                        <div v-if="tweet.entities.urls" class="text-with-urls" v-html="replaceUrls(deleteMediaUrls(tweet.full_text, tweet.entities.media), tweet.entities.urls)">
+                          <!-- {{ tweet.full_text }} -->
+                        </div>
+                        <div v-else-if="tweet.entities.user_mentions" class="text-with-mentions">
+                          <!-- {{ tweet.full_text }} -->
+                        </div>
+                        <div v-else class="text-with-nothing">
+                          <!-- {{ tweet.full_text }} -->
+                        </div>
                       </div>
-                      <div v-else-if="tweet.entities.user_mentions" class="text-with-mentions">
-                        <!-- {{ tweet.full_text }} -->
-                        {{ tweetText[tweet.id] }}
-                      </div>
-                      <div v-else class="text-with-mothing">
-                        <!-- {{ tweet.full_text }} -->
-                        {{ tweetText[tweet.id] }}
+                      <div v-else>
+                        <div v-if="tweet.entities.urls" class="text-with-urls" v-html="replaceUrls(tweet.full_text, tweet.entities.urls)">
+                          <!-- {{ tweet.full_text }} -->
+                        </div>
+                        <div v-else-if="tweet.entities.user_mentions" class="text-with-mentions">
+                          <!-- {{ tweet.full_text }} -->
+                        </div>
+                        <div v-else class="text-with-nothing">
+                          <!-- {{ tweet.full_text }} -->
+                        </div>
                       </div>
                       <div v-if="tweet.quoted_status" class="quoted-tweet">
                         <div class="section">
@@ -381,6 +391,14 @@ export default {
         .catch((error) => {
           console.log(error)
         })
+    },
+    deleteMediaUrls: function (text, mediaUrls) {
+      if (mediaUrls.length === 0) {
+        return text
+      } else {
+        text = text.replace(mediaUrls[0].url, '')
+        return text
+      }
     },
     replaceUrls: function (text, urls) {
       for (let url of urls) {
