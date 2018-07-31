@@ -117,7 +117,7 @@
                   <div class="section">
                     <span class="name-id-icon">
                       <!-- ユーザプロフィールのトリガー -->
-                      <a class="modal-trigger prof-modal-trigger black-text" href="#user-prof" v-on:click="getUserProf(tweet.user.screen_name)"><span class="user-name">{{ tweet.user.name }}</span></a>
+                      <a class="modal-trigger prof-modal-trigger black-text" href="#user-prof" v-on:click="getUserProf(tweet.user.screen_name, tweet.user.name)"><span class="user-name">{{ tweet.user.name }}</span></a>
                       <span class="verified-icon-span" v-if="tweet.user.verified"><i class="verified-icon material-icons blue-text text-lighten-3">check_circle</i></span>
                       <span>@{{ tweet.user.screen_name }}</span>
                     </span>
@@ -125,26 +125,16 @@
                   </div>
                   <div class="section">
                     <div class="tweet-text">
-                      <div v-if="tweet.entities.media">
-                        <div v-if="tweet.entities.urls" class="text-with-urls" v-html="replaceUrls(deleteMediaUrls(tweet.full_text, tweet.entities.media), tweet.entities.urls)">
-                          <!-- {{ tweet.full_text }} -->
-                        </div>
-                        <div v-else-if="tweet.entities.user_mentions" class="text-with-mentions">
-                          <!-- {{ tweet.full_text }} -->
-                        </div>
-                        <div v-else class="text-with-nothing">
-                          <!-- {{ tweet.full_text }} -->
+                      <div v-if="tweet.entities.media" class="text-with-media">
+                        <div class="text-with-entities" v-html="replaceEntities(deleteMediaUrls(tweet.full_text, tweet.entities.media), tweet.entities)">
+                        <!-- <div class="text-with-entities" v-on:load="replaceEntities(deleteMediaUrls(tweet.full_text, tweet.entities.media), tweet.entities)"> -->
+                          <!-- {{t}} -->
                         </div>
                       </div>
                       <div v-else>
-                        <div v-if="tweet.entities.urls" class="text-with-urls" v-html="replaceUrls(tweet.full_text, tweet.entities.urls)">
-                          <!-- {{ tweet.full_text }} -->
-                        </div>
-                        <div v-else-if="tweet.entities.user_mentions" class="text-with-mentions">
-                          <!-- {{ tweet.full_text }} -->
-                        </div>
-                        <div v-else class="text-with-nothing">
-                          <!-- {{ tweet.full_text }} -->
+                        <div class="text-with-entities" v-html="replaceEntities(tweet.full_text, tweet.entities)">
+                        <!-- <div class="text-with-entities" v-on:load="replaceEntities(tweet.full_text, tweet.entities)">
+                          {{t}} -->
                         </div>
                       </div>
                       <div v-if="tweet.quoted_status" class="quoted-tweet">
@@ -207,58 +197,137 @@
           </ul>
         </div>
       </div>
-      <!-- Modal Trigger -->
-      <!-- <a class="waves-effect waves-light btn modal-trigger" href="#user-prof">Modal</a> -->
-      <!-- Modal Structure -->
-      <div id="user-prof" class="modal">
-        <div class="">
-          <span href="#!" class="modal-close waves-effect waves-green btn-flat left"><i class="material-icons modal-close-icon">close</i></span>
-        </div>
-        <div class="modal-content">
-          <div class="modal-content-row row">
-            <div class="user-prof-info col s4">
-              <div class="prof-info-row row">
-                <div class="user-prof-img col s12">
-                  <img class="circle responsive-img modal-prof-img left" v-bind:src="profInfo.image.replace('_normal.jpg', '_bigger.jpg')">
+    </div>
+    <!-- Modal Structure -->
+    <div id="user-prof" class="modal user-prof-modal">
+      <div class="">
+        <span href="#!" class="modal-close waves-effect waves-green btn-flat left"><i class="material-icons modal-close-icon">close</i></span>
+      </div>
+      <div class="modal-content">
+        <div class="modal-content-row row">
+          <div class="user-prof-info col s4">
+            <div class="prof-info-row row">
+              <div class="user-prof-img col s12">
+                <img class="circle responsive-img modal-prof-img left" v-bind:src="profInfo.image.replace('_normal.jpg', '_bigger.jpg')">
+              </div>
+              <div class="prof-name-col col s12">
+                <span class="left prof-name left-align">{{profInfo.name}}</span>
+              </div>
+              <div class="user-prof-id col s12">
+                <span class="left prof-id left-align">＠{{profInfo.id}}</span>
+              </div>
+              <div class="user-prof-ff col s12">
+                <div class="ff-row">
+                  <div class="prof-follow-col col s6">
+                    <div class="prof-follow-label">フォロー</div>
+                    <div class="prof-follow">{{profInfo.follow}}</div>
+                  </div>
+                  <div class="prof-follower-col col s6">
+                    <div class="prof-follower-label">フォロワー</div>
+                    <div class="prof-follower">{{profInfo.follower}}</div>
+                  </div>
                 </div>
-                <div class="prof-name-col col s12">
-                  <span class="left prof-name left-align">{{profInfo.name}}</span>
-                </div>
-                <div class="user-prof-id col s12">
-                  <span class="left prof-id left-align">＠{{profInfo.id}}</span>
-                </div>
-                <div class="user-prof-ff col s12">
-                  <div class="ff-row">
-                    <div class="prof-follow-col col s6">
-                      <div class="prof-follow-label">フォロー</div>
-                      <div class="prof-follow">{{profInfo.follow}}</div>
+              </div>
+              <div v-if="profInfo.location" class="prof-location-col col s12">
+                <span class="left prof-location left-align valign-wrapper"><i class="material-icons left location-icon">location_on</i>{{profInfo.location}}</span>
+              </div>
+              <div class="user-prof-desc col s12">
+                <span class="left prof-desc left-align">{{profInfo.desc}}</span>
+              </div>
+              <div class="user-prof-date col s12">
+                <span class="left prof-date left-align valign-wrapper"><i class="material-icons left join-icon">perm_contact_calendar</i>{{ new Date(profInfo.date).getFullYear() }}年{{ new Date(profInfo.date).getMonth()+1 }}月{{ new Date(profInfo.date).getDate() }}日から</span>
+              </div>
+            </div>
+          </div>
+          <div class="user-tweets col s8">
+            <div class="user-tweets-header z-depth-2 valign-wrapper">
+              <span class="user-tweets-label">Tweets</span>
+            </div>
+            <a class="btn-floating btn-large waves-effect waves-light blue user-add-button" v-on:click="storeQueryWord"><i class="material-icons">playlist_add</i></a>
+            <ul class="collection user-tweet-list">
+              <li v-for="tweet in profInfo.tweets" v-bind:key="tweet.id" class="collection-item user-tweet">
+                <div class="row tweet-content-row">
+                  <div class="col s2">
+                    <img class="circle responsive-img profile-img" v-bind:src="tweet.user.profile_image_url.replace('_normal.jpg', '_bigger.jpg')">
+                  </div>
+                  <div class="col s10 user-text">
+                    <div class="section">
+                      <span class="name-id-icon">
+                        <!-- ユーザプロフィールのトリガー -->
+                        <a class="black-text"><span class="user-name">{{ tweet.user.name }}</span></a>
+                        <span class="verified-icon-span" v-if="tweet.user.verified"><i class="verified-icon material-icons blue-text text-lighten-3">check_circle</i></span>
+                        <span>@{{ tweet.user.screen_name }}</span>
+                      </span>
+                      <span class="tweet-time right">{{ new Date(tweet.created_at).getMonth()+1 }}月{{ new Date(tweet.created_at).getDate() }}日 {{ ('00' + new Date(tweet.created_at).getHours()).slice(-2) }}:{{ ('00' + new Date(tweet.created_at).getMinutes()).slice(-2) }}</span>
                     </div>
-                    <div class="prof-follower-col col s6">
-                      <div class="prof-follower-label">フォロワー</div>
-                      <div class="prof-follower">{{profInfo.follower}}</div>
+                    <div class="section">
+                      <div class="tweet-text">
+                        <div v-if="tweet.entities.media" class="text-with-media">
+                          <div class="text-with-entities" v-html="replaceEntities(deleteMediaUrls(tweet.full_text, tweet.entities.media), tweet.entities)">
+                          </div>
+                        </div>
+                        <div v-else>
+                          <div class="text-with-entities" v-html="replaceEntities(tweet.full_text, tweet.entities)">
+                          </div>
+                        </div>
+                        <div v-if="tweet.quoted_status" class="quoted-tweet">
+                          <div class="section">
+                            <span class="name-id-icon">
+                              <span class="user-name">{{ tweet.quoted_status.user.name }}</span>
+                              <span class="verified-icon-span" v-if="tweet.quoted_status.user.verified"><i class="verified-icon material-icons blue-text text-lighten-3">check_circle</i></span>
+                              <span>@{{ tweet.quoted_status.user.screen_name }}</span>
+                            </span>
+                          </div>
+                          <div class="section">
+                            <div class="tweet-text">
+                              {{ tweet.quoted_status.full_text }}
+                            </div>
+                            <div class="center tweet-media" v-if="tweet.quoted_status.extended_entities">
+                              <div class="tweet-medium" v-if="tweet.quoted_status.extended_entities.media.length > 1" v-for="media in tweet.quoted_status.extended_entities.media" v-bind:key="media.id">
+                                <img v-if="media.type === 'photo'" class="responsive-img tweet-picture" v-bind:src="media.media_url">
+                              </div>
+                              <div class="tweet-medium-one valign-wrapper" v-if="tweet.quoted_status.extended_entities.media.length === 1" v-for="media in tweet.quoted_status.extended_entities.media" v-bind:key="media.id">
+                                <img v-if="media.type === 'photo'" class="responsive-img tweet-picture-one" v-bind:src="media.media_url">
+                                <video v-if="media.type === 'video'" class="responsive-video tweet-video" width="430" height="240" controls>
+                                  <source v-bind:src="media.video_info.variants[0].url">
+                                </video>
+                              </div>
+                            </div>
+                            <div class="fav-retweet">
+                              <div class="fav-retweet-div">
+                                <i class="material-icons left black-text fav-retweet-icons">repeat</i>{{ tweet.quoted_status.favorite_count }}
+                              </div>
+                              <div class="fav-retweet-div">
+                                <i class="material-icons left black-text fav-retweet-icons">favorite_border</i>{{ tweet.quoted_status.retweet_count }}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="center tweet-media" v-if="tweet.extended_entities">
+                        <div class="tweet-medium" v-if="tweet.extended_entities.media.length > 1" v-for="media in tweet.extended_entities.media" v-bind:key="media.id">
+                          <img v-if="media.type === 'photo'" class="responsive-img tweet-picture" v-bind:src="media.media_url">
+                        </div>
+                        <div class="tweet-medium-one valign-wrapper" v-if="tweet.extended_entities.media.length === 1" v-for="media in tweet.extended_entities.media" v-bind:key="media.id">
+                          <img v-if="media.type === 'photo'" class="responsive-img tweet-picture-one" v-bind:src="media.media_url">
+                          <video v-if="media.type === 'video'" class="responsive-video tweet-video" width="430" height="240" controls>
+                            <source v-bind:src="media.video_info.variants[0].url">
+                          </video>
+                        </div>
+                      </div>
+                      <div class="fav-retweet">
+                        <div class="fav-retweet-div">
+                          <i class="material-icons left black-text fav-retweet-icons">repeat</i>{{ tweet.favorite_count }}
+                        </div>
+                        <div class="fav-retweet-div">
+                          <i class="material-icons left black-text fav-retweet-icons">favorite_border</i>{{ tweet.retweet_count }}
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
-                <div v-if="profInfo.location" class="prof-location-col col s12">
-                  <span class="left prof-location left-align valign-wrapper"><i class="material-icons left location-icon">location_on</i>{{profInfo.location}}</span>
-                </div>
-                <div class="user-prof-desc col s12">
-                  <span class="left prof-desc left-align">{{profInfo.desc}}</span>
-                </div>
-                <div class="user-prof-date col s12">
-                  <span class="left prof-date left-align valign-wrapper"><i class="material-icons left join-icon">perm_contact_calendar</i>{{ new Date(profInfo.date).getFullYear() }}年{{ new Date(profInfo.date).getMonth()+1 }}月{{ new Date(profInfo.date).getDate() }}日から</span>
-                </div>
-              </div>
-            </div>
-            <div class="user-tweets col s8">
-              <div class="user-tweets-header z-depth-2 valign-wrapper">
-                <span class="user-tweets-label">Tweets</span>
-              </div>
-              <a class="btn-floating btn-large waves-effect waves-light blue user-add-button"><i class="material-icons">playlist_add</i></a>
-              <ul class="user-tweet-list collection">
-                <li class="user-tweet collection-item">ツイート</li>
-              </ul>
-            </div>
+              </li>
+            </ul>
           </div>
         </div>
       </div>
@@ -267,7 +336,15 @@
 </template>
 
 <script>
+// import Vue from 'vue'
 import axios from 'axios'
+
+// Vue.component('user-link', {
+//   props: ['linkScreenName'],
+//   template: '<a class="modal-trigger prof-modal-trigger blue-text" href="#user-prof" v-on:click="getUserProf(linkScreenName)">@{{ linkScreenName }}</a>',
+//   methods: {
+//   }
+// })
 
 export default {
   name: 'Search',
@@ -286,7 +363,6 @@ export default {
       wordLabel: '',
       labelWords: [],
       tweets: [],
-      tweetText: [],
       // url: '',
       profInfo: {
         image: '',
@@ -296,7 +372,8 @@ export default {
         follower: '',
         location: '',
         desc: '',
-        date: ''
+        date: '',
+        tweets: []
         // background: ''
       }
     }
@@ -351,15 +428,6 @@ export default {
         .then((response) => {
           console.log(response)
           this.tweets = response.data.statuses
-          // for (let tweet of this.tweets) {
-          //   this.tweetText[tweet.id] = tweet.full_text
-          //   if (tweet.entities.urls.length !== 0) {
-          //     for (let url of tweet.entities.urls) {
-          //       // this.url = url.url
-          //       this.tweetText[tweet.id] = this.tweetText[tweet.id].replace(url.url, '<a href=' + url.url + '>' + url.url + '</a>')
-          //     }
-          //   }
-          // }
         })
         .catch((error) => {
           console.log(error)
@@ -373,7 +441,7 @@ export default {
         this.$store.commit('addWords', this.labelWords)
       }
     },
-    getUserProf: function (screenName) {
+    getUserProf: function (screenName, name) {
       console.log(screenName)
       axios.get('http://localhost:3030/twitter/user?screen_name=' + screenName)
         .then((response) => {
@@ -391,6 +459,18 @@ export default {
         .catch((error) => {
           console.log(error)
         })
+
+      axios.get('http://localhost:3030/twitter/search?q=from:' + screenName)
+        .then((response) => {
+          console.log(response)
+          this.profInfo.tweets = response.data.statuses
+        })
+        .catch((error) => {
+          console.log(error)
+        })
+
+      this.query = 'from:' + screenName
+      this.labelWords = [name]
     },
     deleteMediaUrls: function (text, mediaUrls) {
       if (mediaUrls.length === 0) {
@@ -400,16 +480,30 @@ export default {
         return text
       }
     },
-    replaceUrls: function (text, urls) {
-      for (let url of urls) {
-        text = text.replace(url.url, '<a href="' + url.url + '"' + 'target="_blank">' + url.url + '</a>')
+    replaceEntities: function (text, entities) {
+      if (entities.urls.length !== 0) {
+        for (let url of entities.urls) {
+          text = text.replace(url.url, '<a href="' + url.url + '"' + 'target="_blank">' + url.url + '</a>')
+        }
+      }
+      if (entities.user_mentions.length !== 0) {
+        for (let mention of entities.user_mentions) {
+          // text = text.replace('@' + mention.screen_name, '<a class="modal-trigger prof-link-trigger blue-text" href="#user-prof" v-on:click="getUserProf(mention.screen_name)">@' + mention.screen_name + '</a>')
+          text = text.replace('@' + mention.screen_name, '<a class="prof-link-trigger blue-text" href="#user-prof">@' + mention.screen_name + '</a>')
+          // text = text.replace('@' + mention.screen_name, '<user-link v-bind:linkScreenName="' + mention.screen_name + '"></user-link>')
+        }
       }
       return text
+      // this.t = text
     }
   },
   mounted () {
     $(document).ready(function () {
       $('.modal').modal()
+      // $('.prof-link-trigger').attr('id', 'unko')
+      // $('.prof-link-trigger').on('click', function () {
+      //   this.getUserProf('UNKO_BiS')
+      // })
     })
   }
 }
@@ -642,6 +736,19 @@ export default {
   text-decoration: underline;
 }
 
+.user-prof-modal {
+  height: 100% !important;
+}
+
+.modal-content {
+  height: 100%;
+}
+
+.modal-content-row {
+  display: flex;
+  height: 100%;
+}
+
 .modal-close {
   display: inline-block;
   padding: 0;
@@ -651,10 +758,6 @@ export default {
 
 .modal-close-icon {
   font-size: 2rem;
-}
-
-.modal-content-row {
-  display: flex;
 }
 
 .modal-prof-img {
@@ -704,9 +807,16 @@ export default {
 }
 
 .user-tweets {
+  height: 100%;
   padding: 0 4px 0 4px;
   border-right: solid 2px #00acc155;
   border-left: solid 2px #00acc155;
+}
+
+.user-tweet-list {
+  /* ヘッダー分 + α マイナス */
+  height: calc(100% - 40px - 8px);
+  overflow-y: scroll;
 }
 
 .user-tweets-header {
