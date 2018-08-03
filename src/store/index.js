@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import createPersistedState from 'vuex-persistedstate'
 
 Vue.use(Vuex)
 
@@ -10,6 +11,12 @@ const Queries = {
   mutations: {
     addQuery (state, word) {
       state.queries.push(word)
+    },
+    deleteQuery (state, index) {
+      state.queries.splice(index, 1)
+    },
+    clearQuery (state) {
+      state.queries = []
     }
   },
   actions: {},
@@ -27,6 +34,12 @@ const Words = {
   mutations: {
     addWords (state, word) {
       state.words.push(word)
+    },
+    deleteWords (state, index) {
+      state.words.splice(index, 1)
+    },
+    clearWords (state) {
+      state.words = []
     }
   },
   actions: {},
@@ -41,5 +54,6 @@ export default new Vuex.Store({
   modules: {
     Queries,
     Words
-  }
+  },
+  plugins: [createPersistedState()]
 })

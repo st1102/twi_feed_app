@@ -482,7 +482,7 @@ export default {
         })
 
       this.userQuery = 'from:' + screenName
-      this.userLabel.push(name)
+      this.userLabel[0] = name
     },
     deleteMediaUrls: function (text, mediaUrls) {
       if (mediaUrls.length === 0) {
@@ -512,10 +512,6 @@ export default {
   mounted () {
     $(document).ready(function () {
       $('.modal').modal()
-      // $('.prof-link-trigger').attr('id', 'unko')
-      // $('.prof-link-trigger').on('click', function () {
-      //   this.getUserProf('UNKO_BiS')
-      // })
     })
   }
 }

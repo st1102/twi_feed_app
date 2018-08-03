@@ -11,6 +11,7 @@
         <div class="result-words z-depth-2">
           <span v-for="word in labelWords[index]" v-if="word !== ''" v-bind:key="word" class="result-word blue lighten-5">{{ word }}</span>
         </div>
+        <a class="btn-floating btn-large waves-effect waves-light blue feed-delete-btn" v-on:click="deleteFeed(index)"><i class="material-icons">playlist_add</i></a>
         <ul class="collection tweet-list">
           <li v-for="tweet in wordsAndTweets[query]" v-bind:key="tweet.id" class="collection-item one-tweet">
             <!-- リツイート -->
@@ -310,14 +311,11 @@ export default {
     }
   },
   methods: {
-    // storeQueryWord: function () {
-    //   if (this.query !== '') {
-    //     this.$store.commit('addQuery', this.query)
-    //   }
-    //   if (this.labelWords.length !== 0) {
-    //     this.$store.commit('addWords', this.labelWords)
-    //   }
-    // },
+    deleteFeed: function (index) {
+      console.log(index)
+      this.$store.commit('deleteWords', index)
+      this.$store.commit('deleteQuery', index)
+    },
     storeUser: function () {
       if (this.userQuery !== '') {
         this.$store.commit('addQuery', this.userQuery)
@@ -328,6 +326,8 @@ export default {
       }
       this.queries = this.$store.getters.getQueries
       this.labelWords = this.$store.getters.getWords
+      console.log(this.queries)
+      // console.log(this.labelWords)
       for (let query of this.queries) {
         axios.get('http://localhost:3030/twitter/search?q=' + query)
           .then((response) => {
@@ -369,7 +369,7 @@ export default {
         })
 
       this.userQuery = 'from:' + screenName
-      this.userLabel.push(name)
+      this.userLabel[0] = name
     },
     deleteMediaUrls: function (text, mediaUrls) {
       if (mediaUrls.length === 0) {
@@ -397,6 +397,11 @@ export default {
     }
   },
   created () {
+    // データ初期化
+    // this.$store.commit('clearWords')
+    // this.$store.commit('clearQuery')
+    // console.log(this.$store.getters.getQueries)
+    // console.log(this.$store.getters.getWords)
     this.queries = this.$store.getters.getQueries
     this.labelWords = this.$store.getters.getWords
     for (let query of this.queries) {
@@ -414,26 +419,7 @@ export default {
   mounted () {
     $(document).ready(function () {
       $('.modal').modal()
-      // $('.prof-link-trigger').attr('id', 'unko')
-      // $('.prof-link-trigger').on('click', function () {
-      //   this.getUserProf('UNKO_BiS')
-      // })
     })
-  },
-  updated () {
-    // this.queries = this.$store.getters.getQueries
-    // this.labelWords = this.$store.getters.getWords
-    // for (let query of this.queries) {
-    //   axios.get('http://localhost:3030/twitter/search?q=' + query)
-    //     .then((response) => {
-    //       console.log(response)
-    //       Vue.set(this.wordsAndTweets, query, response.data.statuses)
-    //       console.log(this.wordsAndTweets)
-    //     })
-    //     .catch((error) => {
-    //       console.log(error)
-    //     })
-    // }
   }
 }
 </script>
