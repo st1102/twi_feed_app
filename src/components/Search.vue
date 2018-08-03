@@ -243,7 +243,7 @@
             <div class="user-tweets-header z-depth-2 valign-wrapper">
               <span class="user-tweets-label">Tweets</span>
             </div>
-            <a class="btn-floating btn-large waves-effect waves-light blue user-add-button" v-on:click="storeQueryWord"><i class="material-icons">playlist_add</i></a>
+            <a class="btn-floating btn-large waves-effect waves-light blue user-add-button" v-on:click="storeUser"><i class="material-icons">playlist_add</i></a>
             <ul class="collection user-tweet-list">
               <li v-for="tweet in profInfo.tweets" v-bind:key="tweet.id" class="collection-item user-tweet">
                 <div class="row tweet-content-row">
@@ -375,7 +375,9 @@ export default {
         date: '',
         tweets: []
         // background: ''
-      }
+      },
+      userQuery: '',
+      userLabel: []
     }
   },
   methods: {
@@ -435,10 +437,20 @@ export default {
     },
     storeQueryWord: function () {
       if (this.query !== '') {
+        // TODO: 重複しているものは格納しないようにする
         this.$store.commit('addQuery', this.query)
       }
       if (this.labelWords.length !== 0) {
         this.$store.commit('addWords', this.labelWords)
+      }
+    },
+    storeUser: function () {
+      if (this.userQuery !== '') {
+        this.$store.commit('addQuery', this.userQuery)
+      }
+      if (this.userLabel.length !== 0) {
+        this.$store.commit('addWords', this.userLabel)
+        this.userLabel = []
       }
     },
     getUserProf: function (screenName, name) {
@@ -469,8 +481,8 @@ export default {
           console.log(error)
         })
 
-      this.query = 'from:' + screenName
-      this.labelWords = [name]
+      this.userQuery = 'from:' + screenName
+      this.userLabel.push(name)
     },
     deleteMediaUrls: function (text, mediaUrls) {
       if (mediaUrls.length === 0) {
@@ -728,6 +740,7 @@ export default {
   margin: 0;
 }
 
+/* モーダル */
 .prof-modal-trigger {
   text-decoration: none;
 }
