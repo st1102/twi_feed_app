@@ -8,55 +8,15 @@
       </div>
       <div v-else v-for="(query, index) in queries" v-bind:key="query" class="result-feed">
         <!-- <h5 class="result-word z-depth-2">{{ query }}</h5> -->
-        <div class="result-words z-depth-2">
-          <span v-for="word in labelWords[index]" v-if="word !== ''" v-bind:key="word" class="result-word blue lighten-5">{{ word }}</span>
+        <div class="result-feed-header z-depth-2">
+          <div class="result-words">
+            <span v-for="word in labelWords[index]" v-if="word !== ''" v-bind:key="word" class="result-word blue lighten-5">{{ word }}</span>
+          </div>
+          <a class="feed-delete-a " v-on:click="deleteFeed(index)" href="#"><i class="material-icons feed-delete-icon black-text waves-effect waves-blue">delete</i></a>
+          <a class="feed-reload-a" v-on:click="reloadFeed(index)" href="#"><i class="material-icons feed-reload-icon black-text waves-effect waves-blue">refresh</i></a>
         </div>
-        <a class="btn-floating btn-large waves-effect waves-light blue feed-delete-btn" v-on:click="deleteFeed(index)"><i class="material-icons">playlist_add</i></a>
         <ul class="collection tweet-list">
           <li v-for="tweet in wordsAndTweets[query]" v-bind:key="tweet.id" class="collection-item one-tweet">
-            <!-- リツイート -->
-            <!-- <div v-if="tweet.retweeted_status" class="row tweet-content-row retweet">
-              <div class="col s12 retweet-label">
-                <i class="material-icons left green-text fav-retweet-icons">repeat</i><span class="left retweet-username">{{tweet.user.name}} Retweeted</span>
-              </div>
-              <div class="col s2 profile-img-col">
-                <img class="circle profile-img" v-bind:src="tweet.retweeted_status.user.profile_image_url.replace('_normal.jpg', '_bigger.jpg')">
-              </div>
-              <div class="col s10 user-text">
-                <div class="section">
-                  <span class="name-id">
-                    <span class="user-name">{{ tweet.retweeted_status.user.name }}</span>
-                    <span>@{{ tweet.retweeted_status.user.screen_name }}</span>
-                  </span>
-                  <span class="tweet-time right">{{ new Date(tweet.retweeted_status.created_at).getMonth() }}月{{ new Date(tweet.retweeted_status.created_at).getDate() }}日 {{ ('00' + new Date(tweet.retweeted_status.created_at).getHours()).slice(-2) }}:{{ ('00' + new Date(tweet.retweeted_status.created_at).getMinutes()).slice(-2) }}</span>
-                </div>
-                <div class="section">
-                  <div class="tweet-text">
-                    {{ tweet.retweeted_status.text }}
-                  </div>
-                  <div class="center tweet-media" v-if="tweet.extended_entities">
-                    <div class="tweet-medium" v-if="tweet.extended_entities.media.length > 1" v-for="media in tweet.extended_entities.media" v-bind:key="media.id">
-                      <img v-if="media.type === 'photo'" class="responsive-img tweet-picture" v-bind:src="media.media_url">
-                    </div>
-                    <div class="tweet-medium-one valign-wrapper" v-if="tweet.extended_entities.media.length === 1" v-for="media in tweet.extended_entities.media" v-bind:key="media.id">
-                      <img v-if="media.type === 'photo'" class="responsive-img tweet-picture-one" v-bind:src="media.media_url">
-                      <video v-if="media.type === 'video'" class="responsive-video tweet-video" width="430" height="240" controls>
-                        <source v-bind:src="media.video_info.variants[0].url">
-                      </video>
-                    </div>
-                  </div>
-                  <div class="fav-retweet">
-                    <div class="fav-retweet-div">
-                      <i class="material-icons left black-text fav-retweet-icons">repeat</i>{{ tweet.retweeted_status.favorite_count }}
-                    </div>
-                    <div class="fav-retweet-div">
-                      <i class="material-icons left black-text fav-retweet-icons">favorite_border</i>{{ tweet.retweeted_status.retweet_count }}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div> -->
-            <!-- リツイートでない -->
             <div class="row tweet-content-row">
               <div class="col s2 profile-img-col">
                 <img class="circle profile-img" v-bind:src="tweet.user.profile_image_url.replace('_normal.jpg', '_bigger.jpg')">
@@ -149,7 +109,7 @@
     <!-- Modal Structure -->
     <div id="user-prof" class="modal user-prof-modal">
       <div class="">
-        <span href="#!" class="modal-close waves-effect waves-green btn-flat left"><i class="material-icons modal-close-icon">close</i></span>
+        <span href="#!" class="modal-close waves-effect waves-blue btn-flat left"><i class="material-icons modal-close-icon">close</i></span>
       </div>
       <div class="modal-content">
         <div class="modal-content-row row">
@@ -394,6 +354,17 @@ export default {
       }
       return text
       // this.t = text
+    },
+    reloadFeed: function (index) {
+      axios.get('http://localhost:3030/twitter/search?q=' + this.queries[index])
+        .then((response) => {
+          console.log(response)
+          Vue.set(this.wordsAndTweets, this.queries[index], response.data.statuses)
+          console.log(this.wordsAndTweets)
+        })
+        .catch((error) => {
+          console.log(error)
+        })
     }
   },
   created () {
@@ -466,8 +437,14 @@ export default {
   border-left: solid 2px #00acc155;
 }
 
+.result-feed-header {
+  position: relative;
+}
+
 .result-words {
   min-height: 54px;
+  /* width: calc(100% - 4px - 24px - 4px - 24px - 4px); */
+  margin: 0 calc(4px + 24px + 4px + 24px + 4px) 0 calc(4px + 24px + 4px + 24px + 4px);
   vertical-align: middle;
   overflow-x: scroll;
   white-space: nowrap;
@@ -481,6 +458,34 @@ export default {
   white-space: nowrap;
   border-radius: 2px;
   box-shadow: 0px 1px 2px #00000055;
+}
+
+.feed-delete-a {
+  display: inline-block;
+  position: absolute;
+  /* 縦中央寄せ */
+  top: calc(54px/2 - 24px/2);
+  right: 0;
+  margin: 0 4px 0 4px;
+}
+
+.feed-delete-icon {
+  border: 1px;
+  border-radius: 50%;
+}
+
+.feed-reload-a {
+  display: inline-block;
+  position: absolute;
+  /* 縦中央寄せ */
+  top: calc(54px/2 - 24px/2);
+  right: calc(24px + 4px);
+  margin: 0 4px 0 4px;
+}
+
+.feed-reload-icon {
+  border: 1px;
+  border-radius: 50%;
 }
 
 .tweet-list {
