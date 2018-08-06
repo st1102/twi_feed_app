@@ -15,6 +15,8 @@
           <li><router-link to="/search" class="black-text"><i class="material-icons left black-text">search</i>検索</router-link></li>
           <br />
           <li><router-link to="/myfeeds" class="black-text"><i class="material-icons left black-text">format_align_left</i>マイフィード</router-link></li>
+          <br />
+          <li><router-link to="/trends" class="black-text"><i class="material-icons left black-text">trending_up</i>トレンド</router-link></li>
         </ul>
       </div>
       <div class="col s10 router-area">

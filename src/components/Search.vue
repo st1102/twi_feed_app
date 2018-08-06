@@ -620,7 +620,7 @@ export default {
 
 .tweet-list {
   height: calc(100% - (47px + 2px));
-  overflow: scroll;
+  overflow-y: scroll;
   margin: 0;
 }
 

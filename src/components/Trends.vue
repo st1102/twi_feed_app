@@ -1,22 +1,15 @@
 <template>
-  <div class="main">
-    <div class="result-feeds">
-      <div v-if="queries.length === 0" class="no-feed-div valign-wrapper">
-        <span class="no-feed-text blue-text">
-          Search words and Add your original feed !!
-        </span>
-      </div>
-      <div v-else v-for="(query, index) in queries" v-bind:key="query" class="result-feed">
-        <!-- <h5 class="result-word z-depth-2">{{ query }}</h5> -->
-        <div class="result-feed-header z-depth-2">
-          <div class="result-words">
-            <span v-for="word in labelWords[index]" v-if="word !== ''" v-bind:key="word" class="result-word blue lighten-5">{{ word }}</span>
+  <div class="trends">
+    <div class="trend-feeds">
+      <div v-for="(trend, index) in trends" v-bind:key="index" v-if="index < 4" class="trend-feed">
+        <div class="trend-feed-header z-depth-2">
+          <div class="trend-words">
+            <span class="trend-word blue lighten-5">{{ trend.name }}</span>
           </div>
-          <a class="feed-delete-a " v-on:click="deleteFeed(index)" href="#"><i class="material-icons feed-delete-icon black-text waves-effect waves-blue">delete</i></a>
           <a class="feed-reload-a" v-on:click="reloadFeed(index)" href="#"><i class="material-icons feed-reload-icon black-text waves-effect waves-blue">refresh</i></a>
         </div>
         <ul class="collection tweet-list">
-          <li v-for="tweet in wordsAndTweets[query]" v-bind:key="tweet.id" class="collection-item one-tweet">
+          <li v-for="tweet in trendTweets[trend.query]" v-bind:key="tweet.id" class="collection-item one-tweet">
             <div class="row tweet-content-row">
               <div class="col s2 profile-img-col">
                 <img class="circle profile-img" v-bind:src="tweet.user.profile_image_url.replace('_normal.jpg', '_bigger.jpg')">
@@ -36,14 +29,10 @@
                   <div class="tweet-text">
                     <div v-if="tweet.entities.media" class="text-with-media">
                       <div class="text-with-entities" v-html="replaceEntities(deleteMediaUrls(tweet.full_text, tweet.entities.media), tweet.entities)">
-                      <!-- <div class="text-with-entities" v-on:load="replaceEntities(deleteMediaUrls(tweet.full_text, tweet.entities.media), tweet.entities)"> -->
-                        <!-- {{t}} -->
                       </div>
                     </div>
                     <div v-else>
                       <div class="text-with-entities" v-html="replaceEntities(tweet.full_text, tweet.entities)">
-                      <!-- <div class="text-with-entities" v-on:load="replaceEntities(tweet.full_text, tweet.entities)">
-                        {{t}} -->
                       </div>
                     </div>
                     <div v-if="tweet.quoted_status" class="quoted-tweet">
@@ -248,11 +237,13 @@ import Vue from 'vue'
 import axios from 'axios'
 
 export default {
-  name: 'MyFeeds',
+  name: 'Trends',
   data () {
     return {
-      queries: [],
-      wordsAndTweets: {},
+      trends: [],
+      trendTweets: {},
+      // queries: [],
+      // wordsAndTweets: {},
       labelWords: {},
       query: '',
       profInfo: {
@@ -271,11 +262,6 @@ export default {
     }
   },
   methods: {
-    deleteFeed: function (index) {
-      console.log(index)
-      this.$store.commit('deleteWords', index)
-      this.$store.commit('deleteQuery', index)
-    },
     storeUser: function () {
       if (this.userQuery !== '') {
         this.$store.commit('addQuery', this.userQuery)
@@ -286,8 +272,6 @@ export default {
       }
       this.queries = this.$store.getters.getQueries
       this.labelWords = this.$store.getters.getWords
-      console.log(this.queries)
-      // console.log(this.labelWords)
       for (let query of this.queries) {
         axios.get('http://localhost:3030/twitter/search?q=' + query)
           .then((response) => {
@@ -347,20 +331,16 @@ export default {
       }
       if (entities.user_mentions.length !== 0) {
         for (let mention of entities.user_mentions) {
-          // text = text.replace('@' + mention.screen_name, '<a class="modal-trigger prof-link-trigger blue-text" href="#user-prof" v-on:click="getUserProf(mention.screen_name)">@' + mention.screen_name + '</a>')
           text = text.replace('@' + mention.screen_name, '<a class="prof-link-trigger blue-text" href="#user-prof">@' + mention.screen_name + '</a>')
-          // text = text.replace('@' + mention.screen_name, '<user-link v-bind:linkScreenName="' + mention.screen_name + '"></user-link>')
         }
       }
       return text
-      // this.t = text
     },
     reloadFeed: function (index) {
-      axios.get('http://localhost:3030/twitter/search?q=' + this.queries[index])
+      axios.get('http://localhost:3030/twitter/search?q=' + this.trends[index].query)
         .then((response) => {
           console.log(response)
-          Vue.set(this.wordsAndTweets, this.queries[index], response.data.statuses)
-          console.log(this.wordsAndTweets)
+          Vue.set(this.trendTweets, this.trends[index].query, response.data.statuses)
         })
         .catch((error) => {
           console.log(error)
@@ -368,24 +348,33 @@ export default {
     }
   },
   created () {
-    // データ初期化
-    // this.$store.commit('clearWords')
-    // this.$store.commit('clearQuery')
-    // console.log(this.$store.getters.getQueries)
-    // console.log(this.$store.getters.getWords)
-    this.queries = this.$store.getters.getQueries
-    this.labelWords = this.$store.getters.getWords
-    for (let query of this.queries) {
-      axios.get('http://localhost:3030/twitter/search?q=' + query)
-        .then((response) => {
-          console.log(response)
-          Vue.set(this.wordsAndTweets, query, response.data.statuses)
-          console.log(this.wordsAndTweets)
-        })
-        .catch((error) => {
-          console.log(error)
-        })
-    }
+    let woeid = 23424856
+    axios.get('http://localhost:3030/twitter/trend?woeid=' + woeid)
+      .then((response) => {
+        this.trends = response.data[0].trends
+        // Vue.set(this.trends, response.data[0].trends)
+        let index = 0
+        for (let trend of this.trends) {
+          axios.get('http://localhost:3030/twitter/search?q=' + trend.query)
+            .then((response) => {
+              console.log(response)
+              Vue.set(this.trendTweets, trend.query, response.data.statuses)
+              console.log(this.trendTweets[trend.query])
+            })
+            .catch((error) => {
+              console.log(error)
+            })
+          if (index === 4) {
+            break
+          } else {
+            index = index + 1
+          }
+        }
+        index = 0
+      })
+      .catch((error) => {
+        console.log(error)
+      })
   },
   mounted () {
     $(document).ready(function () {
@@ -397,25 +386,14 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.main {
+.trends {
   height: 100%;
 }
 
-.result-feeds {
+.trend-feeds {
   display: flex;
   height: 100%;
   overflow-x: scroll;
-}
-
-.no-feed-div {
-  height: 100%;
-  width: 100%;
-}
-
-.no-feed-text {
-  display: inline-block;
-  width: 100%;
-  font-size: 2.5em;
 }
 
 .retweet-label {
@@ -426,7 +404,7 @@ export default {
   margin: 0 0 0 5px;
 }
 
-.result-feed {
+.trend-feed {
   height: 100%;
   width: 400px;
   flex-grow: 0;
@@ -437,11 +415,11 @@ export default {
   border-left: solid 2px #00acc155;
 }
 
-.result-feed-header {
+.trend-feed-header {
   position: relative;
 }
 
-.result-words {
+.trend-words {
   min-height: 54px;
   /* width: calc(100% - 4px - 24px - 4px - 24px - 4px); */
   margin: 0 calc(4px + 24px + 4px + 24px + 4px) 0 calc(4px + 24px + 4px + 24px + 4px);
@@ -450,7 +428,7 @@ export default {
   white-space: nowrap;
 }
 
-.result-word {
+.trend-word {
   display: inline-block;
   font-size: 1.5em;
   margin: 5px;
