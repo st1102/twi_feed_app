@@ -522,6 +522,7 @@ export default {
 .search {
   height: 100%;
   overflow-x: hidden;
+  overflow-y: hidden;
 }
 
 .search-col {
@@ -619,7 +620,7 @@ export default {
 }
 
 .tweet-list {
-  height: calc(100% - (47px + 2px));
+  height: 90%;
   overflow-y: scroll;
   margin: 0;
 }

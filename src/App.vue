@@ -2,9 +2,9 @@
   <div id="app">
     <nav>
       <div class="nav-wrapper blue lighten-2">
-        <router-link to="/" class="brand-logo center">"ロゴ"</router-link>
+        <router-link to="" class="brand-logo center"><strong class="logo-text">TWITTEE</strong></router-link>
         <ul id="nav-mobile" class="right hide-on-med-and-down">
-          <li><a href="">"サイト名" とは？</a></li>
+          <li><router-link to="/desc" class="white-text">TWITTEE とは？</router-link></li>
         </ul>
       </div>
     </nav>
@@ -53,6 +53,11 @@ body {
 .main-area {
   /* ヘッダー分マイナス */
   height: calc(100% - (64px + 12px));
+}
+
+.logo-text {
+  font-family: impact;
+  font-size: 1.3em;
 }
 
 .side-bar {

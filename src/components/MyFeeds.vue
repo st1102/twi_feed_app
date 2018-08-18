@@ -15,7 +15,12 @@
           <a class="feed-delete-a " v-on:click="deleteFeed(index)" href="#"><i class="material-icons feed-delete-icon black-text waves-effect waves-blue">delete</i></a>
           <a class="feed-reload-a" v-on:click="reloadFeed(index)" href="#"><i class="material-icons feed-reload-icon black-text waves-effect waves-blue">refresh</i></a>
         </div>
-        <ul class="collection tweet-list">
+        <div v-if="wordsAndTweets[query].length === 0" class="no-tweets-outer">
+          <div class="no-tweets-inner">
+            <span class="no-tweets-text blue-text valign-wrapper">no result<i class="material-icons no-tweets-icon medium blue-text">sentiment_neutral</i></span>
+          </div>
+        </div>
+        <ul v-else class="collection tweet-list">
           <li v-for="tweet in wordsAndTweets[query]" v-bind:key="tweet.id" class="collection-item one-tweet">
             <div class="row tweet-content-row">
               <div class="col s2 profile-img-col">
@@ -399,12 +404,14 @@ export default {
 <style scoped>
 .main {
   height: 100%;
+  overflow-y: hidden;
 }
 
 .result-feeds {
   display: flex;
   height: 100%;
   overflow-x: scroll;
+  overflow-y: hidden;
 }
 
 .no-feed-div {
@@ -488,8 +495,29 @@ export default {
   border-radius: 50%;
 }
 
+.no-tweets-outer {
+  height: 100%;
+  width: 100%;
+}
+
+.no-tweets-inner {
+  /* TODO: もっと良い形に改善 */
+  position: relative;
+  top: 40%;
+  left: 30%;
+}
+
+.no-tweets-text {
+  font-size: 2.5em;
+}
+
+.no-tweets-icon {
+  margin: 0 0 0 8px;
+  font-size: 1em;
+}
+
 .tweet-list {
-  height: calc(100% - (47px + 2px));
+  height: 90%;
   overflow-y: scroll;
   margin: 0;
 }

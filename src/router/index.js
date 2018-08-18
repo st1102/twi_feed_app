@@ -4,6 +4,7 @@ import HelloWorld from '@/components/HelloWorld'
 import Search from '@/components/Search'
 import MyFeeds from '@/components/MyFeeds'
 import Trends from '@/components/Trends'
+import Desc from '@/components/Desc'
 
 Vue.use(Router)
 
@@ -29,6 +30,11 @@ export default new Router({
       path: '/trends',
       name: 'Trends',
       component: Trends
+    },
+    {
+      path: '/desc',
+      name: 'Desc',
+      component: Desc
     }
   ]
 })

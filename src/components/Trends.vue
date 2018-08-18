@@ -394,6 +394,7 @@ export default {
   display: flex;
   height: 100%;
   overflow-x: scroll;
+  overflow-y: hidden;
 }
 
 .retweet-label {
@@ -466,8 +467,29 @@ export default {
   border-radius: 50%;
 }
 
+.no-tweets-outer {
+  height: 100%;
+  width: 100%;
+}
+
+.no-tweets-inner {
+  /* TODO: もっと良い形に改善 */
+  position: relative;
+  top: 40%;
+  left: 30%;
+}
+
+.no-tweets-text {
+  font-size: 2.5em;
+}
+
+.no-tweets-icon {
+  margin: 0 0 0 8px;
+  font-size: 1em;
+}
+
 .tweet-list {
-  height: calc(100% - (47px + 2px));
+  height: 90%;
   overflow-y: scroll;
   margin: 0;
 }
