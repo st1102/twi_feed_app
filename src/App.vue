@@ -28,7 +28,12 @@
 
 <script>
 export default {
-  name: 'App'
+  name: 'App',
+  mounted () {
+    $(document).ready(function () {
+      // $('.sidenav').sidenav()
+    })
+  }
 }
 </script>
 

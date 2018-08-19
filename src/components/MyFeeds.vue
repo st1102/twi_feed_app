@@ -15,7 +15,7 @@
           <a class="feed-delete-a " v-on:click="deleteFeed(index)" href="#"><i class="material-icons feed-delete-icon black-text waves-effect waves-blue">delete</i></a>
           <a class="feed-reload-a" v-on:click="reloadFeed(index)" href="#"><i class="material-icons feed-reload-icon black-text waves-effect waves-blue">refresh</i></a>
         </div>
-        <div v-if="wordsAndTweets[query].length === 0" class="no-tweets-outer">
+        <div v-if="tweetsLength[query] === 0" class="no-tweets-outer">
           <div class="no-tweets-inner">
             <span class="no-tweets-text blue-text valign-wrapper">no result<i class="material-icons no-tweets-icon medium blue-text">sentiment_neutral</i></span>
           </div>
@@ -258,6 +258,7 @@ export default {
     return {
       queries: [],
       wordsAndTweets: {},
+      tweetsLength: {},
       labelWords: {},
       query: '',
       profInfo: {
@@ -280,6 +281,7 @@ export default {
       console.log(index)
       this.$store.commit('deleteWords', index)
       this.$store.commit('deleteQuery', index)
+      window.Materialize.toast('フィードをマイフィードから削除しました', 1000, 'delete-toast')
     },
     storeUser: function () {
       if (this.userQuery !== '') {
@@ -289,6 +291,7 @@ export default {
         this.$store.commit('addWords', this.userLabel)
         this.userLabel = []
       }
+      window.Materialize.toast('マイフィードに追加されました', 1000, 'add-toast')
       this.queries = this.$store.getters.getQueries
       this.labelWords = this.$store.getters.getWords
       console.log(this.queries)
@@ -298,6 +301,7 @@ export default {
           .then((response) => {
             console.log(response)
             Vue.set(this.wordsAndTweets, query, response.data.statuses)
+            Vue.set(this.tweetsLength, query, response.data.statuses.length)
             console.log(this.wordsAndTweets)
           })
           .catch((error) => {
@@ -385,6 +389,8 @@ export default {
         .then((response) => {
           console.log(response)
           Vue.set(this.wordsAndTweets, query, response.data.statuses)
+          Vue.set(this.tweetsLength, query, response.data.statuses.length)
+          console.log(this.tweetsLength[query])
           console.log(this.wordsAndTweets)
         })
         .catch((error) => {

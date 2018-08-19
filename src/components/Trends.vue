@@ -270,6 +270,7 @@ export default {
         this.$store.commit('addWords', this.userLabel)
         this.userLabel = []
       }
+      window.Materialize.toast('マイフィードに追加されました', 1000, 'add-toast')
       this.queries = this.$store.getters.getQueries
       this.labelWords = this.$store.getters.getWords
       for (let query of this.queries) {

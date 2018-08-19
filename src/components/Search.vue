@@ -58,7 +58,7 @@
           <div class="result-words z-depth-2">
             <span v-for="word in labelWords" v-if="word !== ''" v-bind:key="word" class="result-word blue lighten-5">{{ word }}</span>
           </div>
-          <a class="btn-floating btn-large waves-effect waves-light blue add-button" v-on:click="storeQueryWord"><i class="material-icons">playlist_add</i></a>
+          <a class="btn-floating btn-large waves-effect waves-light blue add-button tooltipped" v-on:click="storeQueryWord" data-position="bottom" data-tooltip="クリックでフィードへ追加！"><i class="material-icons">playlist_add</i></a>
           <div v-if="tweets.length === 0" class="no-tweets-outer">
             <div class="no-tweets-inner">
               <span class="no-tweets-text blue-text valign-wrapper">no result<i class="material-icons no-tweets-icon medium blue-text">sentiment_neutral</i></span>
@@ -66,49 +66,6 @@
           </div>
           <ul v-else class="collection tweet-list">
             <li v-for="tweet in tweets" v-bind:key="tweet.id" class="collection-item one-tweet">
-              <!-- リツイート -->
-              <!-- <div v-if="tweet.retweeted_status" class="row tweet-content-row retweet">
-                <div class="col s12 retweet-label">
-                  <i class="material-icons left green-text fav-retweet-icons">repeat</i><span class="left retweet-username">{{tweet.user.name}} Retweeted</span>
-                </div>
-                <div class="col s2">
-                  <img class="circle responsive-img profile-img" v-bind:src="tweet.retweeted_status.user.profile_image_url.replace('_normal.jpg', '_bigger.jpg')">
-                </div>
-                <div class="col s10 user-text">
-                  <div class="section">
-                    <span class="name-id-icon">
-                      <span class="user-name">{{ tweet.retweeted_status.user.name }}</span>
-                      <span>@{{ tweet.retweeted_status.user.screen_name }}</span>
-                    </span>
-                    <span class="tweet-time right">{{ new Date(tweet.retweeted_status.created_at).getMonth() }}月{{ new Date(tweet.retweeted_status.created_at).getDate() }}日 {{ ('00' + new Date(tweet.retweeted_status.created_at).getHours()).slice(-2) }}:{{ ('00' + new Date(tweet.retweeted_status.created_at).getMinutes()).slice(-2) }}</span>
-                  </div>
-                  <div class="section">
-                    <div class="tweet-text">
-                      {{ tweet.retweeted_status.text }}
-                    </div>
-                    <div class="center tweet-media" v-if="tweet.extended_entities">
-                      <div class="tweet-medium" v-if="tweet.extended_entities.media.length > 1" v-for="media in tweet.extended_entities.media" v-bind:key="media.id">
-                        <img v-if="media.type === 'photo'" class="responsive-img tweet-picture" v-bind:src="media.media_url">
-                      </div>
-                      <div class="tweet-medium-one valign-wrapper" v-if="tweet.extended_entities.media.length === 1" v-for="media in tweet.extended_entities.media" v-bind:key="media.id">
-                        <img v-if="media.type === 'photo'" class="responsive-img tweet-picture-one" v-bind:src="media.media_url">
-                        <video v-if="media.type === 'video'" class="responsive-video tweet-video" width="430" height="240" controls>
-                          <source v-bind:src="media.video_info.variants[0].url">
-                        </video>
-                      </div>
-                    </div>
-                    <div class="fav-retweet">
-                      <div class="fav-retweet-div">
-                        <i class="material-icons left black-text fav-retweet-icons">repeat</i>{{ tweet.retweeted_status.favorite_count }}
-                      </div>
-                      <div class="fav-retweet-div">
-                        <i class="material-icons left black-text fav-retweet-icons">favorite_border</i>{{ tweet.retweeted_status.retweet_count }}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div> -->
-              <!-- リツイートでない -->
               <div class="row tweet-content-row">
                 <div class="col s2">
                   <img class="circle responsive-img profile-img" v-bind:src="tweet.user.profile_image_url.replace('_normal.jpg', '_bigger.jpg')">
@@ -151,10 +108,10 @@
                           </div>
                           <div class="center tweet-media" v-if="tweet.quoted_status.extended_entities">
                             <div class="tweet-medium" v-if="tweet.quoted_status.extended_entities.media.length > 1" v-for="media in tweet.quoted_status.extended_entities.media" v-bind:key="media.id">
-                              <img v-if="media.type === 'photo'" class="responsive-img tweet-picture" v-bind:src="media.media_url">
+                              <img v-if="media.type === 'photo'" class="responsive-img tweet-picture materialboxed" v-bind:src="media.media_url">
                             </div>
                             <div class="tweet-medium-one valign-wrapper" v-if="tweet.quoted_status.extended_entities.media.length === 1" v-for="media in tweet.quoted_status.extended_entities.media" v-bind:key="media.id">
-                              <img v-if="media.type === 'photo'" class="responsive-img tweet-picture-one" v-bind:src="media.media_url">
+                              <img v-if="media.type === 'photo'" class="responsive-img tweet-picture-one materialboxed" v-bind:src="media.media_url">
                               <video v-if="media.type === 'video'" class="responsive-video tweet-video" width="430" height="240" controls>
                                 <source v-bind:src="media.video_info.variants[0].url">
                               </video>
@@ -173,10 +130,10 @@
                     </div>
                     <div class="center tweet-media" v-if="tweet.extended_entities">
                       <div class="tweet-medium" v-if="tweet.extended_entities.media.length > 1" v-for="media in tweet.extended_entities.media" v-bind:key="media.id">
-                        <img v-if="media.type === 'photo'" class="responsive-img tweet-picture" v-bind:src="media.media_url">
+                        <img v-if="media.type === 'photo'" class="responsive-img tweet-picture materialboxed" v-bind:src="media.media_url">
                       </div>
                       <div class="tweet-medium-one valign-wrapper" v-if="tweet.extended_entities.media.length === 1" v-for="media in tweet.extended_entities.media" v-bind:key="media.id">
-                        <img v-if="media.type === 'photo'" class="responsive-img tweet-picture-one" v-bind:src="media.media_url">
+                        <img v-if="media.type === 'photo'" class="responsive-img tweet-picture-one materialboxed" v-bind:src="media.media_url">
                         <video v-if="media.type === 'video'" class="responsive-video tweet-video" width="430" height="240" controls>
                           <source v-bind:src="media.video_info.variants[0].url">
                         </video>
@@ -284,10 +241,10 @@
                             </div>
                             <div class="center tweet-media" v-if="tweet.quoted_status.extended_entities">
                               <div class="tweet-medium" v-if="tweet.quoted_status.extended_entities.media.length > 1" v-for="media in tweet.quoted_status.extended_entities.media" v-bind:key="media.id">
-                                <img v-if="media.type === 'photo'" class="responsive-img tweet-picture" v-bind:src="media.media_url">
+                                <img v-if="media.type === 'photo'" class="responsive-img tweet-picture materialboxed" v-bind:src="media.media_url">
                               </div>
                               <div class="tweet-medium-one valign-wrapper" v-if="tweet.quoted_status.extended_entities.media.length === 1" v-for="media in tweet.quoted_status.extended_entities.media" v-bind:key="media.id">
-                                <img v-if="media.type === 'photo'" class="responsive-img tweet-picture-one" v-bind:src="media.media_url">
+                                <img v-if="media.type === 'photo'" class="responsive-img tweet-picture-one materialboxed" v-bind:src="media.media_url">
                                 <video v-if="media.type === 'video'" class="responsive-video tweet-video" width="430" height="240" controls>
                                   <source v-bind:src="media.video_info.variants[0].url">
                                 </video>
@@ -306,10 +263,10 @@
                       </div>
                       <div class="center tweet-media" v-if="tweet.extended_entities">
                         <div class="tweet-medium" v-if="tweet.extended_entities.media.length > 1" v-for="media in tweet.extended_entities.media" v-bind:key="media.id">
-                          <img v-if="media.type === 'photo'" class="responsive-img tweet-picture" v-bind:src="media.media_url">
+                          <img v-if="media.type === 'photo'" class="responsive-img tweet-picture materialboxed" v-bind:src="media.media_url">
                         </div>
                         <div class="tweet-medium-one valign-wrapper" v-if="tweet.extended_entities.media.length === 1" v-for="media in tweet.extended_entities.media" v-bind:key="media.id">
-                          <img v-if="media.type === 'photo'" class="responsive-img tweet-picture-one" v-bind:src="media.media_url">
+                          <img v-if="media.type === 'photo'" class="responsive-img tweet-picture-one materialboxed" v-bind:src="media.media_url">
                           <video v-if="media.type === 'video'" class="responsive-video tweet-video" width="430" height="240" controls>
                             <source v-bind:src="media.video_info.variants[0].url">
                           </video>
@@ -443,6 +400,7 @@ export default {
       if (this.labelWords.length !== 0) {
         this.$store.commit('addWords', this.labelWords)
       }
+      window.Materialize.toast('マイフィードに追加されました', 1000, 'add-toast')
     },
     storeUser: function () {
       if (this.userQuery !== '') {
@@ -452,6 +410,7 @@ export default {
         this.$store.commit('addWords', this.userLabel)
         this.userLabel = []
       }
+      window.Materialize.toast('マイフィードに追加されました', 1000, 'add-toast')
     },
     getUserProf: function (screenName, name) {
       console.log(screenName)
@@ -512,6 +471,9 @@ export default {
   mounted () {
     $(document).ready(function () {
       $('.modal').modal()
+      // $('.materialboxed').materialbox()
+      // $('.sidenav').sidenav()
+      // $('.tooltipped').tooltip()
     })
   }
 }
