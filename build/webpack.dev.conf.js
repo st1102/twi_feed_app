@@ -48,7 +48,8 @@ const devWebpackConfig = merge(baseWebpackConfig, {
   plugins: [
     new webpack.ProvidePlugin({
       $: 'jquery',
-      jQuery: 'jquery'
+      jQuery: 'jquery',
+      "window.jQuery": "jquery"
     }),
     new webpack.DefinePlugin({
       'process.env': require('../config/dev.env')

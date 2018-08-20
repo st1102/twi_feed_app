@@ -1,8 +1,8 @@
 <template>
   <div class="search">
-    <div class="row search-row">
+    <div class="search-row">
       <!-- search area -->
-      <div class="col s4 search-col">
+      <div id="search-mobile" class="search-col sidenav fixed white">
         <div class="row">
           <div class="input-field col s12">
             <input id="search-word" v-model="parameters.word" v-on:keyup.enter="submit" type="text" autocomplete="off">
@@ -33,27 +33,29 @@
               <label class="left" for="search-videos">動画</label>
             </div>
           </div>
-          <div class="posi-nega-field col s12">
-            <div class="emotion-field posi-field col s12">
-              <input name="emotion" class="with-gap" id="search-posi" value="posi" v-model="parameters.emotion" type="radio">
-              <label class="left" for="search-posi"><i class="material-icons left yellow-text">mood</i>ポジティブなツイート</label>
-            </div>
-            <div class="emotion-field nega-field col s12">
-              <input name="emotion" class="with-gap" id="search-nega" value="nega" v-model="parameters.emotion" type="radio">
-              <label class="left" for="search-nega"><i class="material-icons left blue-text">mood_bad</i>ネガティブなツイート</label>
-            </div>
-            <div class="emotion-field both-field col s12">
-              <input name="emotion" class="with-gap" id="search-both" value="all" v-model="parameters.emotion" type="radio">
-              <label class="left" for="search-both">全て</label>
+          <div class="hide-on-med-and-down">
+            <div class="posi-nega-field col s12">
+              <div class="emotion-field posi-field col s12">
+                <input name="emotion" class="with-gap" id="search-posi" value="posi" v-model="parameters.emotion" type="radio">
+                <label class="left" for="search-posi"><i class="material-icons left yellow-text">mood</i>ポジティブなツイート</label>
+              </div>
+              <div class="emotion-field nega-field col s12">
+                <input name="emotion" class="with-gap" id="search-nega" value="nega" v-model="parameters.emotion" type="radio">
+                <label class="left" for="search-nega"><i class="material-icons left blue-text">mood_bad</i>ネガティブなツイート</label>
+              </div>
+              <div class="emotion-field both-field col s12">
+                <input name="emotion" class="with-gap" id="search-both" value="all" v-model="parameters.emotion" type="radio">
+                <label class="left" for="search-both">全て</label>
+              </div>
             </div>
           </div>
-          <button class="btn waves-effect waves-light submit-btn right blue darken-1" v-on:click="submit">検索
+          <a class="btn waves-effect waves-light submit-btn right blue darken-1" v-on:click="submit">検索
             <i class="material-icons right">search</i>
-          </button>
+          </a>
         </div>
       </div>
       <!-- result area -->
-      <div class="col s8 result-col">
+      <div class="result-col">
         <div class="result-feed">
           <div class="result-words z-depth-2">
             <span v-for="word in labelWords" v-if="word !== ''" v-bind:key="word" class="result-word blue lighten-5">{{ word }}</span>
@@ -472,7 +474,9 @@ export default {
     $(document).ready(function () {
       $('.modal').modal()
       // $('.materialboxed').materialbox()
-      // $('.sidenav').sidenav()
+      $('.search-collapse').sideNav({
+        closeOnClick: true
+      })
       // $('.tooltipped').tooltip()
     })
   }
@@ -488,7 +492,18 @@ export default {
 }
 
 .search-col {
-  margin: 10px 0 0 0;
+  position: fixed;
+  width: 340px;
+  padding: 10px 20px 0 20px;
+  z-index: 1000;
+}
+@media only screen and (max-width : 992px) {
+  .search-col {
+    width: 250px;
+  }
+  .search-row {
+    height: 100%;
+  }
 }
 
 .search-row {
@@ -518,6 +533,13 @@ export default {
 
 .result-col {
   height: 100%;
+  padding-left: calc(340px + 20px + 20px);
+  margin: 0 10px 0 10px;
+}
+@media only screen and (max-width : 992px) {
+  .result-col {
+    padding-left: 0;
+  }
 }
 
 .add-button {
@@ -525,6 +547,11 @@ export default {
   /* ヘッダー+ラベル-ボタンの高さの半分 */
   top: calc((64px + 12px) + (47px + 2px) - 28px);
   right: 5%;
+}
+@media only screen and (max-width : 992px) {
+  .add-button {
+    right: 10%;
+  }
 }
 
 .no-tweets-outer {
@@ -537,6 +564,14 @@ export default {
   position: relative;
   top: 40%;
   left: 35%;
+}
+@media only screen and (max-width : 992px) {
+  .no-tweets-inner {
+    /* TODO: もっと良い形に改善 */
+    position: relative;
+    top: 40%;
+    left: calc(50% - 80px);
+  }
 }
 
 .no-tweets-text {
