@@ -98,22 +98,22 @@
     <!-- Modal Structure -->
     <div id="user-prof" class="modal user-prof-modal">
       <div class="">
-        <span href="#!" class="modal-close waves-effect waves-blue btn-flat left"><i class="material-icons modal-close-icon">close</i></span>
+        <span href="#!" class="modal-close waves-effect waves-green btn-flat left"><i class="material-icons modal-close-icon">close</i></span>
       </div>
       <div class="modal-content">
         <div class="modal-content-row row">
-          <div class="user-prof-info col s4">
+          <div class="user-prof-info">
             <div class="prof-info-row row">
-              <div class="user-prof-img col s12">
-                <img class="circle responsive-img modal-prof-img left" v-bind:src="profInfo.image.replace('_normal.jpg', '_bigger.jpg')">
+              <div class="user-prof-img col m12">
+                <img class="circle modal-prof-img left" v-bind:src="profInfo.image.replace('_normal.jpg', '_bigger.jpg')">
               </div>
-              <div class="prof-name-col col s12">
+              <div class="prof-name-col col m12">
                 <span class="left prof-name left-align">{{profInfo.name}}</span>
               </div>
-              <div class="user-prof-id col s12">
+              <div class="user-prof-id col m12">
                 <span class="left prof-id left-align">＠{{profInfo.id}}</span>
               </div>
-              <div class="user-prof-ff col s12">
+              <div class="user-prof-ff col s12 hide-on-med-and-down">
                 <div class="ff-row">
                   <div class="prof-follow-col col s6">
                     <div class="prof-follow-label">フォロー</div>
@@ -125,39 +125,40 @@
                   </div>
                 </div>
               </div>
-              <div v-if="profInfo.location" class="prof-location-col col s12">
+              <div v-if="profInfo.location" class="prof-location-col col s12 hide-on-med-and-down">
                 <span class="left prof-location left-align valign-wrapper"><i class="material-icons left location-icon">location_on</i>{{profInfo.location}}</span>
               </div>
               <div class="user-prof-desc col s12">
                 <span class="left prof-desc left-align">{{profInfo.desc}}</span>
               </div>
-              <div class="user-prof-date col s12">
+              <div class="user-prof-date col s12 hide-on-med-and-down">
                 <span class="left prof-date left-align valign-wrapper"><i class="material-icons left join-icon">perm_contact_calendar</i>{{ new Date(profInfo.date).getFullYear() }}年{{ new Date(profInfo.date).getMonth()+1 }}月{{ new Date(profInfo.date).getDate() }}日から</span>
               </div>
             </div>
           </div>
-          <div class="user-tweets col s8">
+          <div class="user-tweets">
             <div class="user-tweets-header z-depth-2 valign-wrapper">
               <span class="user-tweets-label">Tweets</span>
+              <span><a class="btn-floating btn-large waves-effect waves-light blue user-add-button show-on-med-and-down" v-on:click="storeUser"><i class="material-icons">playlist_add</i></a></span>
             </div>
-            <a class="btn-floating btn-large waves-effect waves-light blue user-add-button" v-on:click="storeUser"><i class="material-icons">playlist_add</i></a>
+            <a class="btn-floating btn-large waves-effect waves-light blue user-add-button hide-on-med-and-down" v-on:click="storeUser"><i class="material-icons">playlist_add</i></a>
             <ul class="collection user-tweet-list">
               <li v-for="tweet in profInfo.tweets" v-bind:key="tweet.id" class="collection-item user-tweet">
                 <div class="row tweet-content-row">
-                  <div class="col s2">
-                    <img class="circle responsive-img profile-img" v-bind:src="tweet.user.profile_image_url.replace('_normal.jpg', '_bigger.jpg')">
+                  <div class="col s2 profile-img-col">
+                    <img class="circle profile-img" v-bind:src="tweet.user.profile_image_url.replace('_normal.jpg', '_bigger.jpg')">
                   </div>
                   <div class="col s10 user-text">
                     <div class="section">
                       <span class="name-id-icon">
                         <!-- ユーザプロフィールのトリガー -->
-                        <a class="black-text"><span class="user-name">{{ tweet.user.name }}</span></a>
+                        <a class="black-text"><span class="user-name modal-tweet-name">{{ tweet.user.name }}</span></a>
                         <span class="verified-icon-span" v-if="tweet.user.verified"><i class="verified-icon material-icons blue-text text-lighten-3">check_circle</i></span>
-                        <span>@{{ tweet.user.screen_name }}</span>
+                        <span class="hide-on-med-and-down">@{{ tweet.user.screen_name }}</span>
                       </span>
                       <span class="tweet-time right">{{ new Date(tweet.created_at).getMonth()+1 }}月{{ new Date(tweet.created_at).getDate() }}日 {{ ('00' + new Date(tweet.created_at).getHours()).slice(-2) }}:{{ ('00' + new Date(tweet.created_at).getMinutes()).slice(-2) }}</span>
                     </div>
-                    <div class="section">
+                    <div class="section modal-tweet-section">
                       <div class="tweet-text">
                         <div v-if="tweet.entities.media" class="text-with-media">
                           <div class="text-with-entities" v-html="replaceEntities(deleteMediaUrls(tweet.full_text, tweet.entities.media), tweet.entities)">
@@ -181,10 +182,10 @@
                             </div>
                             <div class="center tweet-media" v-if="tweet.quoted_status.extended_entities">
                               <div class="tweet-medium" v-if="tweet.quoted_status.extended_entities.media.length > 1" v-for="media in tweet.quoted_status.extended_entities.media" v-bind:key="media.id">
-                                <img v-if="media.type === 'photo'" class="responsive-img tweet-picture" v-bind:src="media.media_url">
+                                <img v-if="media.type === 'photo'" class="responsive-img tweet-picture materialboxed" v-bind:src="media.media_url">
                               </div>
                               <div class="tweet-medium-one valign-wrapper" v-if="tweet.quoted_status.extended_entities.media.length === 1" v-for="media in tweet.quoted_status.extended_entities.media" v-bind:key="media.id">
-                                <img v-if="media.type === 'photo'" class="responsive-img tweet-picture-one" v-bind:src="media.media_url">
+                                <img v-if="media.type === 'photo'" class="responsive-img tweet-picture-one materialboxed" v-bind:src="media.media_url">
                                 <video v-if="media.type === 'video'" class="responsive-video tweet-video" width="430" height="240" controls>
                                   <source v-bind:src="media.video_info.variants[0].url">
                                 </video>
@@ -203,10 +204,10 @@
                       </div>
                       <div class="center tweet-media" v-if="tweet.extended_entities">
                         <div class="tweet-medium" v-if="tweet.extended_entities.media.length > 1" v-for="media in tweet.extended_entities.media" v-bind:key="media.id">
-                          <img v-if="media.type === 'photo'" class="responsive-img tweet-picture" v-bind:src="media.media_url">
+                          <img v-if="media.type === 'photo'" class="responsive-img tweet-picture materialboxed" v-bind:src="media.media_url">
                         </div>
                         <div class="tweet-medium-one valign-wrapper" v-if="tweet.extended_entities.media.length === 1" v-for="media in tweet.extended_entities.media" v-bind:key="media.id">
-                          <img v-if="media.type === 'photo'" class="responsive-img tweet-picture-one" v-bind:src="media.media_url">
+                          <img v-if="media.type === 'photo'" class="responsive-img tweet-picture-one materialboxed" v-bind:src="media.media_url">
                           <video v-if="media.type === 'video'" class="responsive-video tweet-video" width="430" height="240" controls>
                             <source v-bind:src="media.video_info.variants[0].url">
                           </video>
@@ -415,6 +416,12 @@ export default {
   padding: 0 5px 0 5px;
   border-right: solid 2px #00acc155;
   border-left: solid 2px #00acc155;
+}
+
+@media only screen and (max-width : 992px) {
+  .trend-feed {
+    width: 100%;
+  }
 }
 
 .trend-feed-header {
@@ -635,6 +642,17 @@ export default {
   height: 100%;
 }
 
+@media only screen and (max-width : 992px) {
+  .modal-content {
+    padding: 10px;
+  }
+
+  .modal-content-row {
+    display: block;
+    font-size: 0.9em;
+  }
+}
+
 .modal-close {
   display: inline-block;
   padding: 0;
@@ -649,6 +667,16 @@ export default {
 .modal-prof-img {
   width: 80px;
   border: solid 2px #42a5f5;
+}
+
+@media only screen and (max-width : 992px) {
+  .modal-prof-img {
+    width: 60px;
+  }
+
+  .user-prof-info {
+    width: 100%;
+  }
 }
 
 .prof-name {
@@ -717,7 +745,31 @@ export default {
 
 .user-add-button {
   position: absolute;
-  top: 34px;
+  top: 36px;
   right: 8%;
+}
+
+@media only screen and (max-width : 992px) {
+  .name-id-icon {
+    width: 50%;
+  }
+
+  .modal-tweet-name {
+    padding-left: 10px;
+  }
+
+  .modal-tweet-section {
+    margin-left: 10px;
+  }
+
+  .user-tweets-header {
+    position: relative;
+  }
+
+  .user-add-button {
+    position: absolute;
+    top: 10px;
+    right: 4%;
+  }
 }
 </style>
