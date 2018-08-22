@@ -601,7 +601,7 @@ export default {
 }
 
 .result-words {
-  min-height: 54px;
+  min-height: 1em;
   vertical-align: middle;
   overflow-x: scroll;
   white-space: nowrap;
@@ -706,6 +706,14 @@ export default {
   flex-shrink: 0;
 }
 
+@media only screen and (max-width : 992px) {
+  .tweet-medium {
+    flex-basis: 80%;
+    flex-grow: 0;
+    flex-shrink: 0;
+  }
+}
+
 .tweet-medium-one {
   width: 100%;
   height: 95%;
@@ -778,7 +786,7 @@ export default {
 
   .modal-content-row {
     display: block;
-    font-size: 0.9em;
+    font-size: 0.8em;
   }
 }
 
@@ -884,11 +892,11 @@ export default {
   }
 
   .modal-tweet-name {
-    padding-left: 10px;
+    padding-left: 20px;
   }
 
   .modal-tweet-section {
-    margin-left: 10px;
+    margin-left: 20px;
   }
 
   .user-tweets-header {

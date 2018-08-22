@@ -429,7 +429,7 @@ export default {
 }
 
 .trend-words {
-  min-height: 54px;
+  min-height: 1em;
   /* width: calc(100% - 4px - 24px - 4px - 24px - 4px); */
   margin: 0 calc(4px + 24px + 4px + 24px + 4px) 0 calc(4px + 24px + 4px + 24px + 4px);
   vertical-align: middle;
@@ -578,6 +578,14 @@ export default {
   flex-shrink: 0;
 }
 
+@media only screen and (max-width : 992px) {
+  .tweet-medium {
+    flex-basis: 80%;
+    flex-grow: 0;
+    flex-shrink: 0;
+  }
+}
+
 .tweet-medium-one {
   width: 100%;
   height: 95%;
@@ -649,7 +657,7 @@ export default {
 
   .modal-content-row {
     display: block;
-    font-size: 0.9em;
+    font-size: 0.8em;
   }
 }
 
@@ -755,11 +763,11 @@ export default {
   }
 
   .modal-tweet-name {
-    padding-left: 10px;
+    padding-left: 20px;
   }
 
   .modal-tweet-section {
-    margin-left: 10px;
+    margin-left: 20px;
   }
 
   .user-tweets-header {

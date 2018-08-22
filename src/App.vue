@@ -79,6 +79,7 @@ body {
   height: 100%;
   width: 240px;
   margin-top: 12px;
+  padding-left: 10px;
   z-index: 1000;
 }
 
@@ -88,6 +89,10 @@ body {
 }
 
 @media only screen and (max-width : 992px) {
+  #app {
+    font-size: 0.8em;
+  }
+
   .logo-text {
     font-size: 1.05em;
   }
